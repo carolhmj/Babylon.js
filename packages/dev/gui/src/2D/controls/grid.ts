@@ -278,6 +278,21 @@ export class Grid extends Container {
         return this;
     }
 
+    private static _tagSeparator = ":";
+
+    private _createKeyFromPosition(row: number, column: number) {
+        return `${row}${Grid._tagSeparator}${column}`;
+    }
+
+    public static GetPositionFromKey(control: Control) {
+        const key = control._tag;
+        const split = key.split(Grid._tagSeparator);
+        return {
+            row: parseInt(split[0]),
+            column: parseInt(split[1]),
+        };
+    }
+
     /**
      * Adds a new control to the current grid
      * @param control defines the control to add
@@ -303,7 +318,7 @@ export class Grid extends Container {
 
         const x = Math.min(row, this._rowDefinitions.length - 1);
         const y = Math.min(column, this._columnDefinitions.length - 1);
-        const key = `${x}:${y}`;
+        const key = this._createKeyFromPosition(x, y);
         let goodContainer = this._cells[key];
 
         if (!goodContainer) {

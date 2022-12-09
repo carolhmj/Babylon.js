@@ -2388,6 +2388,17 @@ export class Control implements IAnimatable {
         }
     }
 
+    public clone(host?: AdvancedDynamicTexture) {
+        const serialization: any = {};
+        this.serialize(serialization);
+
+        const controlType = Tools.Instantiate("BABYLON.GUI." + serialization.className);
+        const cloned = new controlType();
+        cloned.parse(serialization, host);
+
+        return cloned;
+    }
+
     /** Releases associated resources */
     public dispose() {
         this.onDirtyObservable.clear();

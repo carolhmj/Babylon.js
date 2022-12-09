@@ -193,7 +193,7 @@ export class Container extends Control {
      * @param control defines the control to add
      * @returns the current container
      */
-    public addControl(control: Nullable<Control>): Container {
+    public addControl(control: Nullable<Control>, ..._args: any[]): Container {
         if (!control) {
             return this;
         }
