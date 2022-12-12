@@ -18,9 +18,9 @@ function makeSynchronizationHandler(synchronizedObject: Control, excludedPropert
                     const result = getResult.apply(target, args);
 
                     // If any of the args is a synchronized control, use that instead
-                    // const synchronizedArgs = args.map((arg) => (arg.synchronizedControl ? arg.synchronizedControl : arg));
-                    getResult.apply(synchronizedObject, args);
-                    // getResult.apply(synchronizedObject, synchronizedArgs);
+                    const synchronizedArgs = args.map((arg) => (arg?.synchronizedControl ? arg.synchronizedControl : arg));
+                    // getResult.apply(synchronizedObject, args);
+                    getResult.apply(synchronizedObject, synchronizedArgs);
 
                     return result;
                 };
@@ -39,7 +39,9 @@ function makeSynchronizationHandler(synchronizedObject: Control, excludedPropert
             Reflect.set(target, prop, value);
             if (!excludedProperties.includes(prop)) {
                 // console.log("sync prop set", prop, value);
-                Reflect.set(synchronizedObject, prop, value);
+                const synchronizedValue = value?.synchronizedControl ? value.synchronizedControl : value;
+                // Reflect.set(synchronizedObject, prop, value);
+                Reflect.set(synchronizedObject, prop, synchronizedValue);
             }
             return true;
         },
@@ -47,14 +49,29 @@ function makeSynchronizationHandler(synchronizedObject: Control, excludedPropert
 }
 
 /**
- * This function helps create a control which changes will be reflected in another control
+ * This function helps create a cloned control which changes will be reflected in the original control
  */
-export function buildSynchronizedControl(originalControl: Control, excludedProperties: string[] = []) {
+export function buildClonedSynchronizedControl(originalControl: Control, excludedProperties: string[] = []) {
     const newControl = originalControl.clone();
     newControl.name = "cloned_" + originalControl.name;
     const handler = makeSynchronizationHandler(originalControl, excludedProperties);
 
     const proxyControl = new Proxy(newControl, handler);
+
+    return proxyControl;
+}
+
+/**
+ * This function synchronizes an existing control with an original control
+ * @param originalControl the control that's going to be altered by the changes
+ * @param synchronizedControl the control who will receive the changes to be proxied
+ * @param excludedProperties the properties that will not be synchronized
+ * @returns
+ */
+export function synchronizeControlWith(originalControl: Control, synchronizedControl: Control, excludedProperties: string[] = []) {
+    const handler = makeSynchronizationHandler(originalControl, excludedProperties);
+
+    const proxyControl = new Proxy(synchronizedControl, handler);
 
     return proxyControl;
 }

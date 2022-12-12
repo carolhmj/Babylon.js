@@ -2399,6 +2399,16 @@ export class Control implements IAnimatable {
         return cloned;
     }
 
+    public parse(serializedObject: any, host?: AdvancedDynamicTexture): Control {
+        SerializationHelper.Parse(() => this, serializedObject, null);
+
+        this.name = serializedObject.name;
+
+        this._parseFromContent(serializedObject, host ?? this._host);
+
+        return this;
+    }
+
     /** Releases associated resources */
     public dispose() {
         this.onDirtyObservable.clear();

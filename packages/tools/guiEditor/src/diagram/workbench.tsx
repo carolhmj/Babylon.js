@@ -30,7 +30,7 @@ import "./workbenchCanvas.scss";
 import { ValueAndUnit } from "gui/2D/valueAndUnit";
 import type { StackPanel } from "gui/2D/controls/stackPanel";
 import { ArcRotateCamera } from "core/Cameras/arcRotateCamera";
-import { buildSynchronizedControl } from "gui-editor/synchronizedControl";
+import { buildClonedSynchronizedControl, synchronizeControlWith } from "gui-editor/synchronizedControl";
 // import { DataStorage } from "core/Misc/dataStorage";
 
 export interface IWorkbenchComponentProps {
@@ -602,14 +602,14 @@ export class WorkbenchComponent extends React.Component<IWorkbenchComponentProps
                         dropLocationControl instanceof Container && //dropping inside a container control
                         this.props.globalState.draggedControlDirection === DragOverLocation.CENTER
                     ) {
-                        // draggedControlParent.removeControl(draggedControl);
+                        draggedControlParent.removeControl(draggedControl);
                         // const liveGui = this.props.globalState.liveGuiTexture;
                         // if (liveGui) {
                         //     if (liveGui.rootContainer.children.indexOf(draggedControl) !== -1) {
                         //         liveGui.rootContainer.removeControl(draggedControl);
                         //     }
                         // }
-                        this.removeSynchronizedControl(draggedControlParent, draggedControl);
+                        // this.removeSynchronizedControl(draggedControlParent, draggedControl);
                         (dropLocationControl as Container).addControl(draggedControl);
                     } else if (dropLocationControl.parent) {
                         //dropping inside the controls parent container
@@ -1010,6 +1010,8 @@ export class WorkbenchComponent extends React.Component<IWorkbenchComponentProps
     synchronizeLiveGUI() {
         if (this.props.globalState.liveGuiTexture) {
             this._trueRootContainer.getDescendants().forEach((desc) => desc.dispose());
+
+            synchronizeControlWith(this.props.globalState.liveGuiTexture.rootContainer, this.trueRootContainer, this.desynchronizedProperties);
             this.props.globalState.liveGuiTexture.rootContainer.children.forEach((child) => {
                 this.synchronizeControl(child, this.trueRootContainer);
             });
@@ -1017,18 +1019,19 @@ export class WorkbenchComponent extends React.Component<IWorkbenchComponentProps
         }
     }
 
-    // Properties not synchronized between live GUI and editor GUI
+    /** Properties not synchronized between live GUI and editor GUI */
     desynchronizedProperties = [
         "_processPicking",
         "_processObservables",
         "_onPointerMove",
         "_onPointerUp",
         "_onPointerDown",
-        "addControl",
+        // "addControl",
         // "clearControls",
-        "parent",
+        // "parent",
         "metadata",
-        "_children",
+        // "_children",
+        "_link",
     ];
 
     synchronizeControl(control: Control, newParent?: Container) {
@@ -1036,7 +1039,7 @@ export class WorkbenchComponent extends React.Component<IWorkbenchComponentProps
         // const cloned = desc.clone();
         //Synchronize control
         console.log("synchronize control", control.name);
-        const cloned = buildSynchronizedControl(control, this.desynchronizedProperties);
+        const cloned = buildClonedSynchronizedControl(control, this.desynchronizedProperties);
         // Stop synchronization while we build the structure
         cloned.synchronize(false);
         if (cloned.clearControls) {
