@@ -267,6 +267,47 @@ export class Container extends Control {
     public onControlRemovedObservable = new Observable<Nullable<Control>>();
 
     /**
+     * Forces a child control to be in a specific position in this container's children
+     * array, potentially modifying the child's zIndex for this.
+     * @param control
+     * @param position
+     * @returns
+     */
+    public forceReorderControl(control: Control, position: number): void {
+        if (position >= this._children.length) {
+            return;
+        }
+
+        const index = this._children.indexOf(control);
+
+        if (index === -1 || index === position) {
+            return;
+        }
+
+        this._children.splice(index, 1);
+
+        this._children.splice(position, 0, control);
+
+        let newZIndex = control.zIndex;
+        if (position > 0) {
+            const previousControlZIndex = this._children[position - 1].zIndex;
+            newZIndex = Math.max(previousControlZIndex, newZIndex);
+        }
+        if (position < this._children.length - 1) {
+            const nextControlZIndex = this._children[position + 1].zIndex;
+            newZIndex = Math.min(nextControlZIndex, newZIndex);
+        }
+        if (newZIndex !== control.zIndex) {
+            // this will call reordercontrol
+            // control.zIndex = newZIndex;
+            throw new Error("Can't reorder because of zindex");
+        }
+        // this._reOrderControl(control);
+
+        this._markAsDirty();
+    }
+
+    /**
      * @internal
      */
     public _reOrderControl(control: Control): void {

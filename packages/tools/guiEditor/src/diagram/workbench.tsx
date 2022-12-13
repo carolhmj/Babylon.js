@@ -593,19 +593,28 @@ export class WorkbenchComponent extends React.Component<IWorkbenchComponentProps
         parent.removeControl(child);
     }
 
-    private addSynchronizedControl(parent: Container, child: Control) {
+    private addSynchronizedControl(parent: Container, child: Control, forceIndex?: number) {
         const synchronizedChild = (child as any).synchronizedControl;
         if (parent === this.trueRootContainer && synchronizedChild) {
             this.props.globalState.liveGuiTexture?.rootContainer.addControl(synchronizedChild);
+            if (forceIndex !== undefined) {
+                this.props.globalState.liveGuiTexture?.rootContainer.forceReorderControl(synchronizedChild, forceIndex);
+            }
         } else {
             const synchronizedParent = (parent as any).synchronizedControl;
 
             if (synchronizedParent && synchronizedChild) {
                 synchronizedParent.addControl(synchronizedChild);
+                if (forceIndex !== undefined) {
+                    synchronizedParent.forceReorderControl(synchronizedChild, forceIndex);
+                }
             }
         }
 
         parent.addControl(child);
+        if (forceIndex !== undefined) {
+            parent.forceReorderControl(child, forceIndex);
+        }
     }
 
     // private adjustParentingIndex(parent: Control, child: Control) {
@@ -626,6 +635,23 @@ export class WorkbenchComponent extends React.Component<IWorkbenchComponentProps
 
     //     }
     // }
+
+    private adjustParent(parent: Container, child: Control, index: number) {
+        const synchronizedChild = (child as any).synchronizedControl;
+        if (parent === this.trueRootContainer && this.props.globalState.liveGuiTexture && synchronizedChild) {
+            this.props.globalState.liveGuiTexture.rootContainer.children.splice(index, 0, synchronizedChild);
+            synchronizedChild.parent = this.props.globalState.liveGuiTexture.rootContainer;
+        } else {
+            const synchronizedParent = (parent as any).synchronizedControl;
+
+            if (synchronizedParent && synchronizedChild) {
+                synchronizedParent.children.splice(index, 0, synchronizedChild);
+                synchronizedChild.parent = synchronizedParent;
+            }
+        }
+        parent.children.splice(index, 0, child);
+        child.parent = parent;
+    }
 
     private parent(dropLocationControl: Nullable<Control>) {
         const draggedControl = this.props.globalState.draggedControl;
@@ -661,15 +687,16 @@ export class WorkbenchComponent extends React.Component<IWorkbenchComponentProps
                             // draggedControlParent.removeControl(draggedControl);
                             this.removeSynchronizedControl(draggedControlParent, draggedControl);
 
-                            // let index = dropLocationControl.parent.children.indexOf(dropLocationControl);
-                            // const reverse = dropLocationControl.parent.typeName === "StackPanel" || dropLocationControl.parent.typeName === "VirtualKeyboard";
+                            let index = dropLocationControl.parent.children.indexOf(dropLocationControl);
+                            const reverse = dropLocationControl.parent.typeName === "StackPanel" || dropLocationControl.parent.typeName === "VirtualKeyboard";
 
-                            // index = this._adjustParentingIndex(index, reverse); //adjusting index to be before or after based on where the control is over
+                            index = this._adjustParentingIndex(index, reverse); //adjusting index to be before or after based on where the control is over
 
                             // dropLocationControl.parent.children.splice(index, 0, draggedControl);
                             // draggedControl.parent = dropLocationControl.parent;
                             // this.adjustParentingIndex(dropLocationControl, draggedControl);
-                            this.addSynchronizedControl(dropLocationControl.parent, draggedControl);
+                            // this.addSynchronizedControl(dropLocationControl.parent, draggedControl, index);
+                            this.adjustParent(dropLocationControl.parent, draggedControl, index);
                         } else if (dropLocationControl.parent === draggedControlParent) {
                             //special case for grid
                             this._reorderGrid(dropLocationControl.parent as Grid, draggedControl, dropLocationControl);
