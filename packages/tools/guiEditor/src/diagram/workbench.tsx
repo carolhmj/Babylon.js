@@ -30,7 +30,8 @@ import "./workbenchCanvas.scss";
 import { ValueAndUnit } from "gui/2D/valueAndUnit";
 import type { StackPanel } from "gui/2D/controls/stackPanel";
 import { ArcRotateCamera } from "core/Cameras/arcRotateCamera";
-import { buildClonedSynchronizedControl, synchronizeControlWith } from "gui-editor/synchronizedControl";
+// import { buildClonedSynchronizedControl, synchronizeControlWith } from "../synchronizedControl";
+import { buildClonedSynchronizedControl } from "../synchronizedControl";
 // import { DataStorage } from "core/Misc/dataStorage";
 
 export interface IWorkbenchComponentProps {
@@ -578,15 +579,53 @@ export class WorkbenchComponent extends React.Component<IWorkbenchComponentProps
 
     // Remove a synchronized control from both the original and the synchronized parent
     private removeSynchronizedControl(parent: Container, child: Control) {
-        const synchronizedParent = (parent as any).synchronizedObject;
-        const synchronizedChild = (child as any).synchronizedObject;
+        const synchronizedChild = (child as any).synchronizedControl;
+        if (parent === this.trueRootContainer && synchronizedChild) {
+            this.props.globalState.liveGuiTexture?.rootContainer.removeControl(synchronizedChild);
+        } else {
+            const synchronizedParent = (parent as any).synchronizedControl;
 
-        if (synchronizedParent && synchronizedChild) {
-            synchronizedParent.removeControl(synchronizedChild);
+            if (synchronizedParent && synchronizedChild) {
+                synchronizedParent.removeControl(synchronizedChild);
+            }
         }
 
         parent.removeControl(child);
     }
+
+    private addSynchronizedControl(parent: Container, child: Control) {
+        const synchronizedChild = (child as any).synchronizedControl;
+        if (parent === this.trueRootContainer && synchronizedChild) {
+            this.props.globalState.liveGuiTexture?.rootContainer.addControl(synchronizedChild);
+        } else {
+            const synchronizedParent = (parent as any).synchronizedControl;
+
+            if (synchronizedParent && synchronizedChild) {
+                synchronizedParent.addControl(synchronizedChild);
+            }
+        }
+
+        parent.addControl(child);
+    }
+
+    // private adjustParentingIndex(parent: Control, child: Control) {
+    //     let index = parent.parent!.children.indexOf(parent);
+    //     const reverse = parent.parent!.typeName === "StackPanel" || parent.parent!.typeName === "VirtualKeyboard";
+
+    //     index = this._adjustParentingIndex(index, reverse); //adjusting index to be before or after based on where the control is over
+
+    //     parent.parent!.children.splice(index, 0, child);
+    //     child.parent = parent.parent;
+    // }
+
+    // private synchronizeAdjustParentingIndex(parent: Control, child: Control) {
+    //     const syncParent = parent === this.trueRootContainer ? this.props.globalState.liveGuiTexture?.rootContainer : (parent as any).synchronizedControl;
+    //     const syncChild = (child as any).synchronizedControl;
+
+    //     if (syncParent && syncChild) {
+
+    //     }
+    // }
 
     private parent(dropLocationControl: Nullable<Control>) {
         const draggedControl = this.props.globalState.draggedControl;
@@ -602,7 +641,8 @@ export class WorkbenchComponent extends React.Component<IWorkbenchComponentProps
                         dropLocationControl instanceof Container && //dropping inside a container control
                         this.props.globalState.draggedControlDirection === DragOverLocation.CENTER
                     ) {
-                        draggedControlParent.removeControl(draggedControl);
+                        // draggedControlParent.removeControl(draggedControl);
+                        this.removeSynchronizedControl(draggedControlParent, draggedControl);
                         // const liveGui = this.props.globalState.liveGuiTexture;
                         // if (liveGui) {
                         //     if (liveGui.rootContainer.children.indexOf(draggedControl) !== -1) {
@@ -610,18 +650,26 @@ export class WorkbenchComponent extends React.Component<IWorkbenchComponentProps
                         //     }
                         // }
                         // this.removeSynchronizedControl(draggedControlParent, draggedControl);
-                        (dropLocationControl as Container).addControl(draggedControl);
+                        // (dropLocationControl as Container).addControl(draggedControl);
+                        // if ((dropLocationControl as any).synchronizedControl && (draggedControl as any).synchronizedControl) {
+                        //     ((dropLocationControl as any).synchronizedControl as Container).addControl((draggedControl as any).synchronizedControl);
+                        // }
+                        this.addSynchronizedControl(dropLocationControl, draggedControl);
                     } else if (dropLocationControl.parent) {
                         //dropping inside the controls parent container
                         if (dropLocationControl.parent.typeName !== "Grid") {
-                            draggedControlParent.removeControl(draggedControl);
-                            let index = dropLocationControl.parent.children.indexOf(dropLocationControl);
-                            const reverse = dropLocationControl.parent.typeName === "StackPanel" || dropLocationControl.parent.typeName === "VirtualKeyboard";
+                            // draggedControlParent.removeControl(draggedControl);
+                            this.removeSynchronizedControl(draggedControlParent, draggedControl);
 
-                            index = this._adjustParentingIndex(index, reverse); //adjusting index to be before or after based on where the control is over
+                            // let index = dropLocationControl.parent.children.indexOf(dropLocationControl);
+                            // const reverse = dropLocationControl.parent.typeName === "StackPanel" || dropLocationControl.parent.typeName === "VirtualKeyboard";
 
-                            dropLocationControl.parent.children.splice(index, 0, draggedControl);
-                            draggedControl.parent = dropLocationControl.parent;
+                            // index = this._adjustParentingIndex(index, reverse); //adjusting index to be before or after based on where the control is over
+
+                            // dropLocationControl.parent.children.splice(index, 0, draggedControl);
+                            // draggedControl.parent = dropLocationControl.parent;
+                            // this.adjustParentingIndex(dropLocationControl, draggedControl);
+                            this.addSynchronizedControl(dropLocationControl.parent, draggedControl);
                         } else if (dropLocationControl.parent === draggedControlParent) {
                             //special case for grid
                             this._reorderGrid(dropLocationControl.parent as Grid, draggedControl, dropLocationControl);
@@ -1011,7 +1059,7 @@ export class WorkbenchComponent extends React.Component<IWorkbenchComponentProps
         if (this.props.globalState.liveGuiTexture) {
             this._trueRootContainer.getDescendants().forEach((desc) => desc.dispose());
 
-            synchronizeControlWith(this.props.globalState.liveGuiTexture.rootContainer, this.trueRootContainer, this.desynchronizedProperties);
+            // synchronizeControlWith(this.props.globalState.liveGuiTexture.rootContainer, this.trueRootContainer, this.propertiesToSync);
             this.props.globalState.liveGuiTexture.rootContainer.children.forEach((child) => {
                 this.synchronizeControl(child, this.trueRootContainer);
             });
@@ -1019,19 +1067,35 @@ export class WorkbenchComponent extends React.Component<IWorkbenchComponentProps
         }
     }
 
-    /** Properties not synchronized between live GUI and editor GUI */
-    desynchronizedProperties = [
-        "_processPicking",
-        "_processObservables",
-        "_onPointerMove",
-        "_onPointerUp",
-        "_onPointerDown",
-        // "addControl",
-        // "clearControls",
-        // "parent",
-        "metadata",
-        // "_children",
-        "_link",
+    /** Properties synchronized between live GUI and editor GUI */
+    propertiesToSync = [
+        "alpha",
+        "clipChildren",
+        "clipContent",
+        "useBitmapCache",
+        "shadowOffsetX",
+        "shadowOffsetY",
+        "scaleX",
+        "scaleY",
+        // TODO add rest, these ones are sufficient for test
+        "rotation",
+        "width",
+        "height",
+        "color",
+        "left",
+        "top",
+        "leftInPixels",
+        "topInPixels",
+        "widthInPixels",
+        "heightInPixels",
+        "color",
+        "zIndex",
+        "isVisible",
+        "isEnabled",
+        "disabledColor",
+        "adaptHeightToChildren",
+        "adaptWidthToChildren",
+        "background",
     ];
 
     synchronizeControl(control: Control, newParent?: Container) {
@@ -1039,7 +1103,7 @@ export class WorkbenchComponent extends React.Component<IWorkbenchComponentProps
         // const cloned = desc.clone();
         //Synchronize control
         console.log("synchronize control", control.name);
-        const cloned = buildClonedSynchronizedControl(control, this.desynchronizedProperties);
+        const cloned = buildClonedSynchronizedControl(control, this.propertiesToSync);
         // Stop synchronization while we build the structure
         cloned.synchronize(false);
         if (cloned.clearControls) {

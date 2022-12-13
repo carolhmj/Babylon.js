@@ -5,13 +5,13 @@
 
 import type { Control } from "gui/2D/controls/control";
 
-function makeSynchronizationHandler(synchronizedObject: Control, excludedProperties: string[] = []) {
+function makeSynchronizationHandler(synchronizedObject: Control, propertiesToSynchronize: string[] = []) {
     let synchronize = true;
     return {
         get: function (target: Control, prop: string) {
             const getResult = Reflect.get(target, prop);
 
-            if (synchronize && !excludedProperties.includes(prop) && typeof getResult === "function") {
+            if (synchronize && propertiesToSynchronize.includes(prop) && typeof getResult === "function") {
                 // console.log("sync prop call", prop);
                 return function (...args: any[]) {
                     // Call the function on both the target and the synchronized object
@@ -37,7 +37,7 @@ function makeSynchronizationHandler(synchronizedObject: Control, excludedPropert
         set: function (target: Control, prop: string, value: any) {
             // Set the value on both the target and the synchronized object
             Reflect.set(target, prop, value);
-            if (!excludedProperties.includes(prop)) {
+            if (propertiesToSynchronize.includes(prop)) {
                 // console.log("sync prop set", prop, value);
                 const synchronizedValue = value?.synchronizedControl ? value.synchronizedControl : value;
                 // Reflect.set(synchronizedObject, prop, value);
@@ -51,10 +51,10 @@ function makeSynchronizationHandler(synchronizedObject: Control, excludedPropert
 /**
  * This function helps create a cloned control which changes will be reflected in the original control
  */
-export function buildClonedSynchronizedControl(originalControl: Control, excludedProperties: string[] = []) {
+export function buildClonedSynchronizedControl(originalControl: Control, propertiesToSync: string[] = []) {
     const newControl = originalControl.clone();
     newControl.name = "cloned_" + originalControl.name;
-    const handler = makeSynchronizationHandler(originalControl, excludedProperties);
+    const handler = makeSynchronizationHandler(originalControl, propertiesToSync);
 
     const proxyControl = new Proxy(newControl, handler);
 
@@ -65,11 +65,11 @@ export function buildClonedSynchronizedControl(originalControl: Control, exclude
  * This function synchronizes an existing control with an original control
  * @param originalControl the control that's going to be altered by the changes
  * @param synchronizedControl the control who will receive the changes to be proxied
- * @param excludedProperties the properties that will not be synchronized
+ * @param propertiesToSync the properties that will not be synchronized
  * @returns
  */
-export function synchronizeControlWith(originalControl: Control, synchronizedControl: Control, excludedProperties: string[] = []) {
-    const handler = makeSynchronizationHandler(originalControl, excludedProperties);
+export function synchronizeControlWith(originalControl: Control, synchronizedControl: Control, propertiesToSync: string[] = []) {
+    const handler = makeSynchronizationHandler(originalControl, propertiesToSync);
 
     const proxyControl = new Proxy(synchronizedControl, handler);
 
