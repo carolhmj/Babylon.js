@@ -131,6 +131,9 @@ export class Control implements IAnimatable {
     /** @internal */
     public _tag: any;
 
+    /** @internal */
+    public _needsToProject: boolean = false;
+
     /**
      * Gets or sets the unique id of the node. Please note that this number will be updated when the control is added to a container
      */
@@ -1413,6 +1416,9 @@ export class Control implements IAnimatable {
         this.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
         this._linkedMesh = mesh;
         this._host._linkedControls.push(this);
+
+        // Hide the control until it can be projected to its corrected position
+        this._needsToProject = true;
     }
 
     /**
@@ -1485,6 +1491,7 @@ export class Control implements IAnimatable {
 
         this._left.ignoreAdaptiveScaling = true;
         this._top.ignoreAdaptiveScaling = true;
+        this._needsToProject = false;
         this._markAsDirty();
     }
 
@@ -1715,7 +1722,7 @@ export class Control implements IAnimatable {
      * @internal
      */
     public _layout(parentMeasure: Measure, context: ICanvasRenderingContext): boolean {
-        if (!this.isDirty && (!this.isVisible || this.notRenderable)) {
+        if (!this.isDirty && (!this.isVisible || this.notRenderable || this._needsToProject)) {
             return false;
         }
 
@@ -1999,7 +2006,7 @@ export class Control implements IAnimatable {
      * @internal
      */
     public _render(context: ICanvasRenderingContext, invalidatedRectangle?: Nullable<Measure>): boolean {
-        if (!this.isVisible || this.notRenderable || this._isClipped) {
+        if (!this.isVisible || this.notRenderable || this._isClipped || this._needsToProject) {
             this._isDirty = false;
             return false;
         }
@@ -2093,7 +2100,7 @@ export class Control implements IAnimatable {
         if (!this._isEnabled) {
             return false;
         }
-        if (!this.isHitTestVisible || !this.isVisible || this._doNotRender) {
+        if (!this.isHitTestVisible || !this.isVisible || this._doNotRender || this._needsToProject) {
             return false;
         }
 

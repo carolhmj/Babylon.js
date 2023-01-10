@@ -385,11 +385,21 @@ export class AdvancedDynamicTexture extends DynamicTexture {
         this.applyYInversionOnUpdate = invertY;
         this._rootElement = scene.getEngine().getInputElement();
         this._renderObserver = scene.onBeforeCameraRenderObservable.add((camera: Camera) => this._checkUpdate(camera));
-        this._controlAddedObserver = this._rootContainer.onControlAddedObservable.add((control) => {
-            if (control && this._scene && this._scene.activeCamera) {
-                this._checkUpdate(this._scene.activeCamera);
-            }
-        });
+        // this._controlAddedObserver = this._rootContainer.onControlAddedObservable.add((control) => {
+        //     if (control && this._scene && this._scene.activeCamera) {
+        //         // this._checkControl(control, this._scene.activeCamera);
+        //         // this._checkUpdate(this._scene.activeCamera);
+        //         this._controlsToUpdate.push(control);
+        //     }
+        // });
+        // this._scene?.onBeforeRenderObservable.add(() => {
+        //     if (this._controlsToUpdate.length) {
+        //         this._controlsToUpdate.forEach((control) => {
+        //             this._checkControl(control, this._scene!.activeCamera!);
+        //         });
+        //         this._controlsToUpdate = [];
+        //     }
+        // });
         this._preKeyboardObserver = scene.onPreKeyboardObservable.add((info) => {
             if (!this._focusedControl) {
                 return;
@@ -666,6 +676,31 @@ export class AdvancedDynamicTexture extends DynamicTexture {
         return new Vector3(projectedPosition.x, projectedPosition.y, projectedPosition.z);
     }
 
+    private _projectControl(control: Control, scene: Scene, globalViewport: Viewport) {
+        if (!control.isVisible) {
+            return;
+        }
+        const mesh = control._linkedMesh as AbstractMesh;
+        if (!mesh || mesh.isDisposed()) {
+            Tools.SetImmediate(() => {
+                control.linkWithMesh(null);
+            });
+            return;
+        }
+        const position = mesh.getBoundingInfo ? mesh.getBoundingInfo().boundingSphere.center : (Vector3.ZeroReadOnly as Vector3);
+        const projectedPosition = Vector3.Project(position, mesh.getWorldMatrix(), scene.getTransformMatrix(), globalViewport);
+        if (projectedPosition.z < 0 || projectedPosition.z > 1) {
+            control.notRenderable = true;
+            return;
+        }
+        control.notRenderable = false;
+        if (this.useInvalidateRectOptimization) {
+            control.invalidateRect();
+        }
+
+        control._moveToProjectedPosition(projectedPosition);
+    }
+
     private _checkUpdate(camera: Camera): void {
         if (this._layerToDispose) {
             if ((camera.layerMask & this._layerToDispose.layerMask) === 0) {
@@ -679,28 +714,7 @@ export class AdvancedDynamicTexture extends DynamicTexture {
             }
             const globalViewport = this._getGlobalViewport();
             for (const control of this._linkedControls) {
-                if (!control.isVisible) {
-                    continue;
-                }
-                const mesh = control._linkedMesh as AbstractMesh;
-                if (!mesh || mesh.isDisposed()) {
-                    Tools.SetImmediate(() => {
-                        control.linkWithMesh(null);
-                    });
-                    continue;
-                }
-                const position = mesh.getBoundingInfo ? mesh.getBoundingInfo().boundingSphere.center : (Vector3.ZeroReadOnly as Vector3);
-                const projectedPosition = Vector3.Project(position, mesh.getWorldMatrix(), scene.getTransformMatrix(), globalViewport);
-                if (projectedPosition.z < 0 || projectedPosition.z > 1) {
-                    control.notRenderable = true;
-                    continue;
-                }
-                control.notRenderable = false;
-                if (this.useInvalidateRectOptimization) {
-                    control.invalidateRect();
-                }
-
-                control._moveToProjectedPosition(projectedPosition);
+                this._projectControl(control, scene, globalViewport);
             }
         }
         if (!this._isDirty && !this._rootContainer.isDirty) {
