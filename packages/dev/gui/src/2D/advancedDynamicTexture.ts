@@ -86,6 +86,7 @@ export class AdvancedDynamicTexture extends DynamicTexture {
     private _rootElement: Nullable<HTMLElement>;
     private _cursorChanged = false;
     private _defaultMousePointerId = 0;
+    private _controlsAddedBeforeFrame = new Array<Control>();
 
     /** @internal */
     public _capturedPointerIds = new Set<number>();
@@ -385,21 +386,11 @@ export class AdvancedDynamicTexture extends DynamicTexture {
         this.applyYInversionOnUpdate = invertY;
         this._rootElement = scene.getEngine().getInputElement();
         this._renderObserver = scene.onBeforeCameraRenderObservable.add((camera: Camera) => this._checkUpdate(camera));
-        // this._controlAddedObserver = this._rootContainer.onControlAddedObservable.add((control) => {
-        //     if (control && this._scene && this._scene.activeCamera) {
-        //         // this._checkControl(control, this._scene.activeCamera);
-        //         // this._checkUpdate(this._scene.activeCamera);
-        //         this._controlsToUpdate.push(control);
-        //     }
-        // });
-        // this._scene?.onBeforeRenderObservable.add(() => {
-        //     if (this._controlsToUpdate.length) {
-        //         this._controlsToUpdate.forEach((control) => {
-        //             this._checkControl(control, this._scene!.activeCamera!);
-        //         });
-        //         this._controlsToUpdate = [];
-        //     }
-        // });
+        this._controlAddedObserver = this._rootContainer.onControlAddedObservable.add((control) => {
+            if (control) {
+                this._controlsAddedBeforeFrame.push(control);
+            }
+        });
         this._preKeyboardObserver = scene.onPreKeyboardObservable.add((info) => {
             if (!this._focusedControl) {
                 return;
@@ -735,6 +726,12 @@ export class AdvancedDynamicTexture extends DynamicTexture {
         const context = this.getContext();
         context.font = "18px Arial";
         context.strokeStyle = "white";
+
+        // const scene = this.getScene();
+        // if (this._isFullscreen && this._controlsAddedBeforeFrame.length > 0 && scene && scene.activeCamera) {
+        //     this._controlsAddedBeforeFrame = [];
+        //     this._checkUpdate(scene.activeCamera);
+        // }
 
         // Layout
         this.onBeginLayoutObservable.notifyObservers(this);
