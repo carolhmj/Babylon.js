@@ -13,7 +13,7 @@ import type { ICanvas, ICanvasRenderingContext } from "../../Engines/ICanvas";
  */
 export class DynamicTexture extends Texture {
     private _generateMipMaps: boolean;
-    private _canvas: ICanvas;
+    public _canvas: ICanvas;
     private _context: ICanvasRenderingContext;
 
     /**
@@ -70,7 +70,7 @@ export class DynamicTexture extends Texture {
         if (this._canvas.height !== textureSize.height) {
             this._canvas.height = textureSize.height;
         }
-        this._context = this._canvas.getContext("2d");
+        // this._context = this._canvas.getContext("2d");
     }
 
     /**
@@ -129,6 +129,9 @@ export class DynamicTexture extends Texture {
      * @returns the canvas context of the dynamic texture
      */
     public getContext(): ICanvasRenderingContext {
+        if (!this._context) {
+            this._context = this._canvas.getContext("2d");
+        }
         return this._context;
     }
 

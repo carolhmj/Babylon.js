@@ -30,6 +30,22 @@ class Playground {
         // Our built-in 'ground' shape. Params: name, options, scene
         BABYLON.MeshBuilder.CreateGround("ground", { width: 6, height: 6 }, scene);
 
+        const textureGround = new BABYLON.DynamicTexture("dynamic texture", 512, scene, true);
+        const textureContext = textureGround.getContext();
+        const img = new Image();
+        img.src = 'textures/grass.png';
+        img.onload = function() {
+            //Add image to dynamic texture
+            textureContext.drawImage(this, 0, 0);
+            textureGround.update();
+
+            textureContext.drawImage(this, 10, 490, 10, 12, 156, 136, 200, 220)
+            textureGround.update();	
+        }
+
+        const materialGround = new BABYLON.StandardMaterial("Mat", scene);
+        materialGround.diffuseTexture = textureGround;
+
         return scene;
     }
 }
