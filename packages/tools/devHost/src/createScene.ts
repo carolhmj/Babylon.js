@@ -66,8 +66,6 @@ export const createScene = async function () {
         const img = document.createElement("img");
         img.src = "test-sprite-2k.png";
         img.onload = async function () {
-            //Add image to dynamic texture
-            // context.drawImage(this, 0, 0);
             const bitmap = await createImageBitmap(img);
             textureWorker.postMessage({ type: "start", canvas: textureOffscreen, bitmap, width, height }, [textureOffscreen, bitmap]);
 
@@ -86,7 +84,6 @@ export const createScene = async function () {
                     );
                     const x = cameraPlanePosition.x;
                     const y = cameraPlanePosition.y;
-                    // console.log('position', x, y);
                     positionsList.push([x, y]);
                 }
                 textureWorker.postMessage({ type: "draw", positionsList });
