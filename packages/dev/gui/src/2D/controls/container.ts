@@ -686,5 +686,16 @@ export class Container extends Control {
 
         return true;
     }
+
+    public copyFrom(other: Container) {
+        super.copyFrom(other);
+
+        this.renderToIntermediateTexture = other.renderToIntermediateTexture;
+        this.maxLayoutCycle = other.maxLayoutCycle;
+        this.adaptHeightToChildren = other.adaptHeightToChildren;
+        this.adaptWidthToChildren = other.adaptWidthToChildren;
+        this.background = other.background;
+        this.backgroundGradient = other.backgroundGradient;
+    }
 }
 RegisterClass("BABYLON.GUI.Container", Container);

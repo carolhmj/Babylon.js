@@ -573,5 +573,23 @@ export class Grid extends Container {
             this.addControl(children[i], rowNumber, columnNumber);
         }
     }
+
+    public copyFrom(source: Grid): void {
+        super.copyFrom(source);
+
+        this._rowDefinitionObservers.length = 0;
+        this._columnDefinitionObservers.length = 0;
+
+        this._rowDefinitions = source._rowDefinitions.splice(0);
+        this._columnDefinitions = source._columnDefinitions.splice(0);
+
+        for (let i = 0; i < this._rowDefinitions.length; i++) {
+            this._rowDefinitionObservers.push(this._rowDefinitions[i].onChangedObservable.add(() => this._markAsDirty())!);
+        }
+
+        for (let j = 0; j < this._columnDefinitions.length; j++) {
+            this._columnDefinitionObservers.push(this._columnDefinitions[j].onChangedObservable.add(() => this._markAsDirty())!);
+        }
+    }
 }
 RegisterClass("BABYLON.GUI.Grid", Grid);

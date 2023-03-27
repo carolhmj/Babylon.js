@@ -2366,6 +2366,75 @@ export class Control implements IAnimatable {
     }
 
     /**
+     * Copies the properties from another control to this one
+     * @param other the control whose properties will be copied
+     */
+    public copyFrom(other: Control) {
+        /**
+         * SERIALIZABLE PROPERTIES
+         */
+        this.name = other.name;
+        this.isReadOnly = other.isReadOnly;
+        this.metadata = other.metadata;
+        this.isHitTestVisible = other.isHitTestVisible;
+        this.isPointerBlocker = other.isPointerBlocker;
+        this.isFocusInvisible = other.isFocusInvisible;
+        this.clipChildren = other.clipChildren;
+        this.clipContent = other.clipContent;
+        this.useBitmapCache = other.useBitmapCache;
+        this.shadowOffsetX = other.shadowOffsetX;
+        this.shadowOffsetY = other.shadowOffsetY;
+        this.shadowBlur = other.shadowBlur;
+        this.shadowColor = other.shadowColor;
+        this.hoverCursor = other.hoverCursor;
+        this.accessibilityTag = other.accessibilityTag;
+        this.fontOffset = other.fontOffset;
+        this.alpha = other.alpha;
+        this.highlightLineWidth = other.highlightLineWidth;
+        this.isHighlighted = other.isHighlighted;
+        this.highlightColor = other.highlightColor;
+        this.scaleX = other.scaleX;
+        this.scaleY = other.scaleY;
+        this.rotation = other.rotation;
+        this.transformCenterX = other.transformCenterX;
+        this.transformCenterY = other.transformCenterY;
+        this.horizontalAlignment = other.horizontalAlignment;
+        this.verticalAlignment = other.verticalAlignment;
+        this.fixedRatio = other.fixedRatio;
+        this.width = other.width;
+        this.height = other.height;
+        this.fontFamily = other.fontFamily;
+        this.fontStyle = other.fontStyle;
+        this.fontWeight = other.fontWeight;
+        this.style = other.style;
+        this.color = other.color;
+        this.gradient = other.gradient;
+        this.zIndex = other.zIndex;
+        this.notRenderable = other.notRenderable;
+        this.isVisible = other.isVisible;
+        this.descendantsOnlyPadding = other.descendantsOnlyPadding;
+        this.paddingLeft = other.paddingLeft;
+        this.paddingRight = other.paddingRight;
+        this.paddingTop = other.paddingTop;
+        this.paddingBottom = other.paddingBottom;
+        this.left = other.left;
+        this.top = other.top;
+        this.linkOffsetX = other.linkOffsetX;
+        this.linkOffsetY = other.linkOffsetY;
+        this.isEnabled = other.isEnabled;
+        this.disabledColor = other.disabledColor;
+        this.disabledColorItem = other.disabledColorItem;
+        this.overlapGroup = other.overlapGroup;
+        this.overlapDeltaMultiplier = other.overlapDeltaMultiplier;
+        this.animations = other.animations;
+
+        const linkedMesh = other.linkedMesh;
+        if (linkedMesh) {
+            this.linkWithMesh(linkedMesh);
+        }
+    }
+
+    /**
      * Parses a serialized object into this control
      * @param serializedObject the object with the serialized properties
      * @param host the texture where the control will be instantiated. Can be empty, in which case the control will be created on the same texture

@@ -109,5 +109,12 @@ export class Ellipse extends Container {
         );
         context.stroke();
     }
+
+    public copyFrom(source: Ellipse): void {
+        super.copyFrom(source);
+
+        this._thickness = source._thickness;
+        this.markAsDirty();
+    }
 }
 RegisterClass("BABYLON.GUI.Ellipse", Ellipse);

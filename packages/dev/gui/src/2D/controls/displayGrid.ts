@@ -230,5 +230,21 @@ export class DisplayGrid extends Control {
     protected _getTypeName(): string {
         return "DisplayGrid";
     }
+
+    public copyFrom(source: DisplayGrid): void {
+        super.copyFrom(source);
+
+        this._background = source._background;
+        this._cellWidth = source._cellWidth;
+        this._cellHeight = source._cellHeight;
+        this._minorLineTickness = source._minorLineTickness;
+        this._minorLineColor = source._minorLineColor;
+        this._majorLineTickness = source._majorLineTickness;
+        this._majorLineColor = source._majorLineColor;
+        this._majorLineFrequency = source._majorLineFrequency;
+        this._displayMinorLines = source._displayMinorLines;
+        this._displayMajorLines = source._displayMajorLines;
+        this.markAsDirty();
+    }
 }
 RegisterClass("BABYLON.GUI.DisplayGrid", DisplayGrid);

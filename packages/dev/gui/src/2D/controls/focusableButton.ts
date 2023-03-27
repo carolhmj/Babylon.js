@@ -99,12 +99,18 @@ export class FocusableButton extends Button implements IFocusableControl {
     }
 
     /** @internal */
-    public displose() {
+    public dispose() {
         super.dispose();
 
         this.onBlurObservable.clear();
         this.onFocusObservable.clear();
         this.onKeyboardEventProcessedObservable.clear();
+    }
+
+    public copyFrom(source: FocusableButton): void {
+        super.copyFrom(source);
+
+        this.focusedColor = source.focusedColor;
     }
 }
 RegisterClass("BABYLON.GUI.FocusableButton", FocusableButton);

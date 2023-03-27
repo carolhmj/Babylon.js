@@ -193,5 +193,14 @@ export class Checkbox extends Control {
 
         return panel;
     }
+
+    public copyFrom(other: Checkbox) {
+        super.copyFrom(other);
+
+        this.background = other.background;
+        this.checkSizeRatio = other.checkSizeRatio;
+        this.thickness = other.thickness;
+        this.isChecked = other.isChecked;
+    }
 }
 RegisterClass("BABYLON.GUI.Checkbox", Checkbox);
