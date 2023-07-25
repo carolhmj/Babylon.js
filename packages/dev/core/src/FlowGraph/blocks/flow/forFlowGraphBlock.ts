@@ -31,10 +31,10 @@ export class ForFlowGraphBlock extends FlowGraphBlock implements IFlowBlock, IDa
         ];
     }
     private _executeSingleIteration(params: IFlowExecutionParameters) {
-        const queue = new FlowGraphQueue({});
+        const queue = new FlowGraphQueue();
         const flowToActivate = this._currentIndex >= this._endIndex ? this._findOutputByName("loopDone")! : this._findOutputByName("loopBody")!;
         if (this._currentIndex < this._endIndex) {
-            queue._onExecutionDoneObservable.addOnce(() => {
+            queue.listenToExecutionDone(() => {
                 this._currentIndex++;
                 this._executeSingleIteration(params);
             });

@@ -1,5 +1,8 @@
 import type { FlowGraphConnectionPoint } from "./flowGraphConnectionPoint";
 
+/**
+ * @experimental
+ */
 export interface IFlowGraphBlockConstructorParameters {
     name: string;
 }

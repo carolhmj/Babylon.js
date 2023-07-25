@@ -15,12 +15,8 @@ export class FlowGraph {
     public start() {
         this._eventBlocks.forEach((eventBlock) => {
             eventBlock.start((eventParams) => {
-                const queue = new FlowGraphQueue({});
-                const connectedBlock = eventParams.activatedConnection.connectedPoint?.ownerBlock;
-                if (!connectedBlock || !isFlowBlock(connectedBlock)) {
-                    throw new Error("Cannot find connected block");
-                }
-                queue.pushBlock(connectedBlock);
+                const queue = new FlowGraphQueue();
+                queue.activateFlow(eventParams.activatedConnection);
                 queue.executeNext();
             });
         });
