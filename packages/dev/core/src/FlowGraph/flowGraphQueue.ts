@@ -2,7 +2,7 @@ import { Observable } from "core/Misc/observable";
 import { isFlowBlock, type IFlowBlock } from "./iFlowBlock";
 import type { FlowGraphConnectionPoint } from "./flowGraphConnectionPoint";
 
-let count = 0;
+// let count = 0;
 
 export interface IFlowGraphQueueConstructorParams {}
 /**
@@ -10,19 +10,18 @@ export interface IFlowGraphQueueConstructorParams {}
  * The Flow Graph queue execute the flow graph blocks events in sequential order.
  */
 export class FlowGraphQueue {
-    private _id: number;
+    // private _id: number;
     private _blocks: Array<IFlowBlock> = [];
     public _onExecutionDoneObservable: Observable<void>;
     private _onActivateFlowObservable: Observable<FlowGraphConnectionPoint>;
 
     constructor(params: IFlowGraphQueueConstructorParams) {
-        this._id = count++;
+        // this._id = count++;
         this._onExecutionDoneObservable = new Observable<void>();
         this._onActivateFlowObservable = new Observable<FlowGraphConnectionPoint>();
         this._onActivateFlowObservable.add((connectionPoint) => {
             this.activateFlow(connectionPoint);
         });
-        console.log("Created queue", this._id);
     }
 
     public pushBlock(block: IFlowBlock) {
@@ -43,9 +42,6 @@ export class FlowGraphQueue {
             this.executeNext();
         } else {
             this._onExecutionDoneObservable.notifyObservers();
-            if (this._blocks.length > 0) {
-                this.executeNext();
-            }
         }
     }
 }

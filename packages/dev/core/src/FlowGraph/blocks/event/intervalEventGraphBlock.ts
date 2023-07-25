@@ -1,8 +1,8 @@
-import { FlowGraphBlock } from "../flowGraphBlock";
-import { FlowGraphConnectionPoint, FlowGraphConnectionPointDirection } from "../flowGraphConnectionPoint";
-import type { IDataBlock } from "../iDataBlock";
-import type { IEventBlock } from "../iEventBlock";
-import type { EventCallback } from "../types";
+import { FlowGraphBlock } from "../../flowGraphBlock";
+import { FlowGraphConnectionPoint, FlowGraphConnectionPointDirection } from "../../flowGraphConnectionPoint";
+import type { IDataBlock } from "../../iDataBlock";
+import type { IEventBlock } from "../../iEventBlock";
+import type { EventCallback } from "../../types";
 
 export interface IIntervalEventGraphBlockConstructionParameters {
     interval: number;

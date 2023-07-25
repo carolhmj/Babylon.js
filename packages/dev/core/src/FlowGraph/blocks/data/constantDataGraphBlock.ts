@@ -1,6 +1,6 @@
-import { FlowGraphBlock } from "../flowGraphBlock";
-import { FlowGraphConnectionPoint, FlowGraphConnectionPointDirection } from "../flowGraphConnectionPoint";
-import type { IDataBlock } from "../iDataBlock";
+import { FlowGraphBlock } from "../../flowGraphBlock";
+import { FlowGraphConnectionPoint, FlowGraphConnectionPointDirection } from "../../flowGraphConnectionPoint";
+import type { IDataBlock } from "../../iDataBlock";
 
 /**
  * @experimental

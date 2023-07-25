@@ -1,8 +1,8 @@
-import { FlowGraphBlock } from "../flowGraphBlock";
-import { FlowGraphConnectionPoint, FlowGraphConnectionPointDirection } from "../flowGraphConnectionPoint";
-import type { IFlowBlock, IFlowExecutionParameters } from "../iFlowBlock";
-import type { IDataBlock } from "../iDataBlock";
-import { FlowGraphQueue } from "../flowGraphQueue";
+import { FlowGraphBlock } from "../../flowGraphBlock";
+import { FlowGraphConnectionPoint, FlowGraphConnectionPointDirection } from "../../flowGraphConnectionPoint";
+import type { IFlowBlock, IFlowExecutionParameters } from "../../iFlowBlock";
+import type { IDataBlock } from "../../iDataBlock";
+import { FlowGraphQueue } from "../../flowGraphQueue";
 
 export interface ForFlowGraphBlockConstructorParameters {}
 /**

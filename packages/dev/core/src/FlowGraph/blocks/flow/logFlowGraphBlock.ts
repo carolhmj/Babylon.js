@@ -1,6 +1,6 @@
-import { FlowGraphBlock } from "../flowGraphBlock";
-import { FlowGraphConnectionPoint, FlowGraphConnectionPointDirection } from "../flowGraphConnectionPoint";
-import type { IFlowBlock, IFlowExecutionParameters } from "../iFlowBlock";
+import { FlowGraphBlock } from "../../flowGraphBlock";
+import { FlowGraphConnectionPoint, FlowGraphConnectionPointDirection } from "../../flowGraphConnectionPoint";
+import type { IFlowBlock, IFlowExecutionParameters } from "../../iFlowBlock";
 
 export interface LogFlowGraphBlockConstructorParameters {}
 /**
