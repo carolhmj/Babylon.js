@@ -1319,4 +1319,36 @@ declare module BABYLON.GLTF2 {
         mode: "ATTRIBUTES" | "TRIANGLES" | "INDICES";
         filter?: "NONE" | "OCTAHEDRAL" | "QUATERNION" | "EXPONENTIAL";
     }
+
+    /**
+     * Interfaces for the KHR_interactivity extension
+     */
+    interface IKHRInteractivity {
+        nodes: IKHRInteractivity_Node[];
+    }
+
+    interface IKHRInteractivity_Node {
+        type: string;
+        flows: IKHRInteractivity_Flow[];
+        configuration: IKHRInteractivity_Configuration[];
+        parameters: IKHRInteractivity_Parameter[];
+    }
+
+    interface IKHRInteractivity_Flow {
+        id: string;
+        node: number;
+        socket: string;
+    }
+
+    interface IKHRInteractivity_Configuration {
+        id: string;
+        value: any;
+    }
+
+    interface IKHRInteractivity_Parameter {
+        id: string;
+        value?: any;
+        node?: number;
+        socket?: string;
+    }
 }

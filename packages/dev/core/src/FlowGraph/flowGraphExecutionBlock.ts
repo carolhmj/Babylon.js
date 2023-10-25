@@ -1,5 +1,7 @@
+import type { Nullable } from "../types";
 import type { IFlowGraphBlockConfiguration } from "./flowGraphBlock";
 import { FlowGraphBlock } from "./flowGraphBlock";
+import type { FlowGraphConnection } from "./flowGraphConnection";
 import { FlowGraphConnectionType } from "./flowGraphConnection";
 import type { FlowGraphContext } from "./flowGraphContext";
 import { FlowGraphSignalConnection } from "./flowGraphSignalConnection";
@@ -68,7 +70,7 @@ export abstract class FlowGraphExecutionBlock extends FlowGraphBlock {
     }
 
     public static Parse(serializationObject: any = {}) {
-        const block = super.Parse(serializationObject) as FlowGraphExecutionBlock;
+        const block = FlowGraphBlock.Parse(serializationObject) as FlowGraphExecutionBlock;
         for (let i = 0; i < serializationObject.signalInputs.length; i++) {
             block.signalInputs[i].deserialize(serializationObject.signalInputs[i]);
         }
@@ -76,5 +78,23 @@ export abstract class FlowGraphExecutionBlock extends FlowGraphBlock {
             block.signalOutputs[i].deserialize(serializationObject.signalOutputs[i]);
         }
         return block;
+    }
+
+    public findConnectionByName(name: string): Nullable<FlowGraphConnection<any, any>> {
+        const superResult = super.findConnectionByName(name);
+        if (superResult !== null) {
+            return superResult;
+        }
+        for (const signalIn of this.signalInputs) {
+            if (signalIn.name === name) {
+                return signalIn;
+            }
+        }
+        for (const signalOut of this.signalOutputs) {
+            if (signalOut.name === name) {
+                return signalOut;
+            }
+        }
+        return null;
     }
 }

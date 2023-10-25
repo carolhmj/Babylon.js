@@ -1,10 +1,11 @@
 import { RandomGUID } from "../Misc/guid";
+import type { FlowGraphConnection } from "./flowGraphConnection";
 import { FlowGraphConnectionType } from "./flowGraphConnection";
 import type { FlowGraphContext } from "./flowGraphContext";
 import { FlowGraphDataConnection } from "./flowGraphDataConnection";
 import type { RichType } from "./flowGraphRichTypes";
-import { Tools } from "core/Misc/tools";
-import { FlowGraphExecutionBlock } from "./flowGraphExecutionBlock";
+import { Tools } from "../Misc/tools";
+import type { Nullable } from "../types";
 
 export interface IFlowGraphBlockConfiguration {
     name?: string;
@@ -34,8 +35,7 @@ export class FlowGraphBlock {
      */
     public dataOutputs: FlowGraphDataConnection<any>[];
 
-    /** Constructor is protected so only subclasses can be instantiated */
-    protected constructor(public config?: IFlowGraphBlockConfiguration) {
+    constructor(public config?: IFlowGraphBlockConfiguration) {
         this.configure();
     }
 
@@ -97,14 +97,20 @@ export class FlowGraphBlock {
         for (let i = 0; i < serializationObject.dataOutputs.length; i++) {
             obj.dataOutputs[i].deserialize(serializationObject.dataOutputs[i]);
         }
-        if (obj instanceof FlowGraphExecutionBlock) {
-            for (let i = 0; i < serializationObject.signalInputs.length; i++) {
-                obj.signalInputs[i].deserialize(serializationObject.signalInputs[i]);
-            }
-            for (let i = 0; i < serializationObject.signalOutputs.length; i++) {
-                obj.signalOutputs[i].deserialize(serializationObject.signalOutputs[i]);
+        return obj;
+    }
+
+    public findConnectionByName(name: string): Nullable<FlowGraphConnection<any, any>> {
+        for (const dataIn of this.dataInputs) {
+            if (dataIn.name === name) {
+                return dataIn;
             }
         }
-        return obj;
+        for (const dataOut of this.dataOutputs) {
+            if (dataOut.name === name) {
+                return dataOut;
+            }
+        }
+        return null;
     }
 }
