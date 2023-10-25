@@ -16,7 +16,7 @@ export class FlowGraphTimerBlock extends FlowGraphAsyncExecutionBlock {
     /**
      * Input connection: The timeout of the timer.
      */
-    public readonly timeout: FlowGraphDataConnection<number>;
+    public readonly duration: FlowGraphDataConnection<number>;
     /**
      * Output connection: The signal that is activated when the timer is done.
      * This signal is activated asynchronically.
@@ -26,12 +26,12 @@ export class FlowGraphTimerBlock extends FlowGraphAsyncExecutionBlock {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(config);
 
-        this.timeout = this._registerDataInput("timeout", RichTypeNumber);
+        this.duration = this._registerDataInput("duration", RichTypeNumber);
         this.onTimerDone = this._registerSignalOutput("onTimerDone");
     }
 
     public _preparePendingTasks(context: FlowGraphContext): void {
-        const currentTimeout = this.timeout.getValue(context);
+        const currentTimeout = this.duration.getValue(context);
 
         if (currentTimeout !== undefined && currentTimeout >= 0) {
             const timers = context._getExecutionVariable(this, "runningTimers") || [];

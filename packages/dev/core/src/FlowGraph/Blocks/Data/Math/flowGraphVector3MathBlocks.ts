@@ -217,7 +217,7 @@ export class FlowGraphRotate3dVector3Block extends FlowGraphBlock {
     /**
      * Input connection: The vector to rotate.
      */
-    public readonly input: FlowGraphDataConnection<Vector3>;
+    public readonly a: FlowGraphDataConnection<Vector3>;
     /**
      * Input connection: The axis to rotate around.
      */
@@ -225,25 +225,26 @@ export class FlowGraphRotate3dVector3Block extends FlowGraphBlock {
     /**
      * Input connection: The angle to rotate by.
      */
-    public readonly angle: FlowGraphDataConnection<number>;
+    public readonly amount: FlowGraphDataConnection<number>;
     /**
      * Output connection: The rotated vector.
      */
-    public readonly output: FlowGraphDataConnection<Vector3>;
+    public readonly result: FlowGraphDataConnection<Vector3>;
 
     private _cachedQuaternion = new Quaternion();
 
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(config);
-        this.input = this._registerDataInput("input", RichTypeVector3);
-        this.angle = this._registerDataInput("angle", RichTypeNumber);
-        this.output = this._registerDataOutput("output", RichTypeVector3);
+        this.a = this._registerDataInput("a", RichTypeVector3);
+        this.axis = this._registerDataInput("axis", RichTypeVector3);
+        this.amount = this._registerDataInput("amount", RichTypeNumber);
+        this.result = this._registerDataOutput("result", RichTypeVector3);
     }
 
     public _updateOutputs(_context: FlowGraphContext): void {
-        const rot = Quaternion.RotationAxisToRef(this.axis.getValue(_context), this.angle.getValue(_context), this._cachedQuaternion);
-        const input = this.input.getValue(_context);
-        const output = this.output.getValue(_context);
+        const rot = Quaternion.RotationAxisToRef(this.axis.getValue(_context), this.amount.getValue(_context), this._cachedQuaternion);
+        const input = this.a.getValue(_context);
+        const output = this.result.getValue(_context);
         input.applyRotationQuaternionToRef(rot, output);
     }
 

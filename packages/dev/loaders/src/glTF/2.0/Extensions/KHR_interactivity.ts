@@ -94,26 +94,30 @@ export class KHR_interactivity implements IGLTFLoaderExtension {
             nodes.push(createdNode);
         }
 
-        // Then, go through all nodes again and connect their flows
+        // Then, go through all nodes again and connect their flows and parameters
         for (let i = 0; i < definition.nodes.length; i++) {
             const node = definition.nodes[i];
             const createdNode = nodes[i];
-            for (let j = 0; j < node.flows.length; j++) {
+            const nodeFlows = node.flows ?? [];
+            for (let j = 0; j < nodeFlows.length; j++) {
                 const flow = node.flows[j];
                 const createdConnectedNode = nodes[flow.node];
+                if (!createdConnectedNode) {
+                    throw new Error("Invalid flow definition: " + JSON.stringify(flow));
+                }
                 const createdNodeSocket = createdConnectedNode.findConnectionByName(flow.socket);
-                (createdNode as any).signalOutputs[j].connectTo(createdNodeSocket);
+                if (createdNodeSocket) {
+                    (createdNode as any).signalOutputs[j].connectTo(createdNodeSocket);
+                } else {
+                    throw new Error("Invalid flow definition: " + JSON.stringify(flow));
+                }
             }
-        }
-
-        // Finally, go through all nodes again and connect their inputs
-        for (let i = 0; i < definition.nodes.length; i++) {
-            const node = definition.nodes[i];
-            const createdNode = nodes[i];
-            for (let j = 0; j < node.parameters.length; j++) {
+            const nodeParameters = node.parameters ?? [];
+            for (let j = 0; j < nodeParameters.length; j++) {
                 const parameter = node.parameters[j];
                 const inputSocket = createdNode.findConnectionByName(parameter.id);
                 if (parameter.value !== undefined && inputSocket) {
+                    // TODO: function to set as value, as the value can be an array representing vector3, etc.
                     (inputSocket as FlowGraphDataConnection<any>).setValue(parameter.value, flowGraphContext);
                 } else if (parameter.node !== undefined && parameter.socket !== undefined) {
                     const connectedNode = nodes[parameter.node];
@@ -121,13 +125,14 @@ export class KHR_interactivity implements IGLTFLoaderExtension {
                     if (outputSocket && inputSocket) {
                         outputSocket.connectTo(inputSocket);
                     } else {
-                        throw new Error("Invalid parameter definition: " + parameter);
+                        throw new Error("Invalid parameter definition: " + JSON.stringify(parameter));
                     }
                 } else {
-                    throw new Error("Invalid parameter definition: " + parameter);
+                    throw new Error("Invalid parameter definition: " + JSON.stringify(parameter));
                 }
             }
         }
+        console.log("constructed graph", flowGraph);
     }
 }
 

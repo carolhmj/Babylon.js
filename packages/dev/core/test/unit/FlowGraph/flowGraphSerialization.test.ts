@@ -171,7 +171,7 @@ describe("Flow Graph Serialization", () => {
         graph.addEventBlock(flowGraphSceneReadyBlock);
 
         const logBlock = new FlowGraphLogBlock();
-        flowGraphSceneReadyBlock.onDone.connectTo(logBlock.onStart);
+        flowGraphSceneReadyBlock.onDone.connectTo(logBlock.in);
 
         const getVariableBlock = new FlowGraphGetVariableBlock();
         getVariableBlock.variableName.setValue("test", context);

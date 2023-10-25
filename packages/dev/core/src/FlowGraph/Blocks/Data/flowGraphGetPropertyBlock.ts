@@ -12,14 +12,14 @@ export class FlowGraphGetPropertyBlock<TargetT, ValueT> extends FlowGraphBlock {
 
     public readonly property: FlowGraphDataConnection<string>;
 
-    public readonly output: FlowGraphDataConnection<ValueT>;
+    public readonly value: FlowGraphDataConnection<ValueT>;
 
     public constructor(config: IFlowGraphBlockConfiguration) {
         super(config);
 
         this.target = this._registerDataInput("target", RichTypeAny);
         this.property = this._registerDataInput("property", RichTypeString);
-        this.output = this._registerDataOutput("output", RichTypeAny);
+        this.value = this._registerDataOutput("value", RichTypeAny);
     }
 
     private _getProperty(target: any, property: string): any {
@@ -39,7 +39,7 @@ export class FlowGraphGetPropertyBlock<TargetT, ValueT> extends FlowGraphBlock {
 
         if (target !== undefined) {
             const value = this._getProperty(target, property);
-            this.output.setValue(value, _context);
+            this.value.setValue(value, _context);
         } else {
             throw new Error("Invalid target.");
         }
