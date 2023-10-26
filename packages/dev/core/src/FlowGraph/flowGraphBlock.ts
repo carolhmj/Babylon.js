@@ -1,5 +1,5 @@
 import { RandomGUID } from "../Misc/guid";
-import type { FlowGraphConnection } from "./flowGraphConnection";
+import type { FlowGraphConnection, ISerializedFlowGraphConnection } from "./flowGraphConnection";
 import { FlowGraphConnectionType } from "./flowGraphConnection";
 import type { FlowGraphContext } from "./flowGraphContext";
 import { FlowGraphDataConnection } from "./flowGraphDataConnection";
@@ -9,7 +9,6 @@ import type { Nullable } from "../types";
 
 export interface IFlowGraphBlockConfiguration {
     name?: string;
-    [prop: string]: any;
 }
 
 /**
@@ -88,7 +87,7 @@ export class FlowGraphBlock {
         return "FGBlock";
     }
 
-    public static Parse(serializationObject: any): FlowGraphBlock {
+    public static Parse(serializationObject: ISerializedFlowGraphBlock): FlowGraphBlock {
         const classType = Tools.Instantiate(serializationObject.className);
         const obj = new classType(serializationObject.config);
         obj.uniqueId = serializationObject.uniqueId;
@@ -114,4 +113,12 @@ export class FlowGraphBlock {
         }
         return null;
     }
+}
+
+export interface ISerializedFlowGraphBlock {
+    uniqueId: string;
+    config: IFlowGraphBlockConfiguration;
+    dataInputs: ISerializedFlowGraphConnection[];
+    dataOutputs: ISerializedFlowGraphConnection[];
+    className: string;
 }

@@ -2,10 +2,9 @@ import type { Observer } from "../Misc/observable";
 import type { Nullable } from "../types";
 import type { Scene } from "../scene";
 import { FlowGraphEventBlock } from "./flowGraphEventBlock";
-import { FlowGraphVariableDefinitions } from "./flowGraphVariableDefinitions";
-import { FlowGraphContext } from "./flowGraphContext";
+import { FlowGraphContext, ISerializedFlowGraphContext } from "./flowGraphContext";
 import type { FlowGraphEventCoordinator } from "./flowGraphEventCoordinator";
-import { FlowGraphBlock } from "./flowGraphBlock";
+import { FlowGraphBlock, ISerializedFlowGraphBlock } from "./flowGraphBlock";
 import { FlowGraphExecutionBlock } from "./flowGraphExecutionBlock";
 import type { FlowGraphCoordinator } from "./flowGraphCoordinator";
 import type { FlowGraphSignalConnection } from "./flowGraphSignalConnection";
@@ -44,11 +43,6 @@ export interface FlowGraphParams {
  * The graph can then be started, which will init and start all of its event blocks.
  */
 export class FlowGraph {
-    /**
-     * The variables defined for this graph
-     */
-    public variableDefinitions: FlowGraphVariableDefinitions = new FlowGraphVariableDefinitions();
-
     /** @internal */
     public _eventBlocks: FlowGraphEventBlock[] = [];
     private _sceneDisposeObserver: Nullable<Observer<Scene>>;
@@ -79,7 +73,7 @@ export class FlowGraph {
      * @returns the context, where you can get and set variables
      */
     public createContext() {
-        const context = this.variableDefinitions.generateContext({ scene: this._scene, eventCoordinator: this._eventCoordinator });
+        const context = new FlowGraphContext({ scene: this._scene, eventCoordinator: this._eventCoordinator });
         this._executionContexts.push(context);
         return context;
     }
@@ -171,8 +165,6 @@ export class FlowGraph {
      * @param valueSerializeFunction a function to serialize complex values
      */
     public serialize(serializationObject: any = {}, valueSerializeFunction?: (key: string, value: any, serializationObject: any) => void) {
-        serializationObject.variableDefinitions = {};
-        this.variableDefinitions.serialize(serializationObject.variableDefinitions);
         serializationObject.allBlocks = [];
         this.visitAllBlocks((block) => {
             const serializedBlock: any = {};
@@ -230,9 +222,12 @@ export class FlowGraph {
      * @param valueParseFunction a function to parse complex values in a scene
      * @returns
      */
-    public static Parse(serializationObject: any, coordinator: FlowGraphCoordinator, valueParseFunction?: (key: string, serializationObject: any, scene: Scene) => any): FlowGraph {
+    public static Parse(
+        serializationObject: ISerializedFlowGraph,
+        coordinator: FlowGraphCoordinator,
+        valueParseFunction?: (key: string, serializationObject: any, scene: Scene) => any
+    ): FlowGraph {
         const graph = coordinator.createGraph();
-        graph.variableDefinitions.deserialize(serializationObject.variableDefinitions);
         const blocks: FlowGraphBlock[] = [];
         // Parse all blocks
         for (const serializedBlock of serializationObject.allBlocks) {
@@ -264,4 +259,9 @@ export class FlowGraph {
         }
         return graph;
     }
+}
+
+export interface ISerializedFlowGraph {
+    allBlocks: ISerializedFlowGraphBlock[];
+    executionContexts: ISerializedFlowGraphContext[];
 }

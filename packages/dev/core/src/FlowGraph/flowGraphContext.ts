@@ -272,7 +272,7 @@ export class FlowGraphContext {
      * @returns
      */
     public static Parse(
-        serializationObject: any = {},
+        serializationObject: ISerializedFlowGraphContext,
         graph: FlowGraph,
         valueParseFunction: (key: string, serializationObject: any, scene: Scene) => any = defaultValueParseFunction
     ): FlowGraphContext {
@@ -289,4 +289,10 @@ export class FlowGraphContext {
 
         return result;
     }
+}
+
+export interface ISerializedFlowGraphContext {
+    uniqueId: string;
+    _userVariables: any;
+    _connectionValues: any;
 }

@@ -180,7 +180,7 @@ describe("Flow Graph Serialization", () => {
 
         const serialized: any = {};
         graph.serialize(serialized);
-
+        console.log("serialized", serialized);
         // Graph is serialized with all blocks
         expect(serialized.allBlocks.length).toBe(3);
 

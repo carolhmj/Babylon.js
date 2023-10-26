@@ -117,7 +117,7 @@ export class FlowGraphConnection<BlockT, ConnectedToT extends IConnectable> impl
      * Deserialize from a object into this
      * @param serializationObject
      */
-    deserialize(serializationObject: any) {
+    deserialize(serializationObject: ISerializedFlowGraphConnection) {
         this.uniqueId = serializationObject.uniqueId;
         this.name = serializationObject.name;
         this._connectionType = serializationObject._connectionType;
@@ -136,4 +136,12 @@ export class FlowGraphConnection<BlockT, ConnectedToT extends IConnectable> impl
         connection.deserialize(serializationObject);
         return connection;
     }
+}
+
+export interface ISerializedFlowGraphConnection {
+    uniqueId: string;
+    name: string;
+    _connectionType: FlowGraphConnectionType;
+    connectedPointIds: string[];
+    className: string;
 }
