@@ -1325,13 +1325,17 @@ declare module BABYLON.GLTF2 {
      */
     interface IKHRInteractivity {
         nodes: IKHRInteractivity_Node[];
+        customEvents: IKHRInteractivity_CustomEvent[];
+        types: IKHRInteractivity_Type[];
     }
 
     interface IKHRInteractivity_Node {
+        id: number;
         type: string;
         flows: IKHRInteractivity_Flow[];
         configuration: IKHRInteractivity_Configuration[];
         parameters: IKHRInteractivity_Parameter[];
+        metadata?: any;
     }
 
     interface IKHRInteractivity_Flow {
@@ -1350,5 +1354,20 @@ declare module BABYLON.GLTF2 {
         value?: any;
         node?: number;
         socket?: string;
+    }
+
+    interface IKHRInteractivity_CustomEvent {
+        id: string;
+        values: IKHRInteractivity_CustomEventValue[];
+    }
+
+    interface IKHRInteractivity_CustomEventValue {
+        id: string;
+        type: number;
+        description: string;
+    }
+
+    interface IKHRInteractivity_Type {
+        signature: string;
     }
 }

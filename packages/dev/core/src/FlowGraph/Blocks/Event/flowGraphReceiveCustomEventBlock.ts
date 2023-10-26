@@ -13,7 +13,7 @@ import { RegisterClass } from "../../../Misc/typeStore";
  * Parameters used to create a FlowGraphReceiveCustomEventBlock.
  */
 export interface IFlowGraphReceiveCustomEventBlockConfiguration extends IFlowGraphBlockConfiguration {
-    eventId: string;
+    id: string;
 }
 
 /**
@@ -33,18 +33,18 @@ export class FlowGraphReceiveCustomEventBlock extends FlowGraphEventBlock {
         this.eventData = this._registerDataOutput("eventData", RichTypeAny);
     }
     public _preparePendingTasks(context: FlowGraphContext): void {
-        const observable = context.configuration.eventCoordinator.getCustomEventObservable(this.config.eventId);
+        const observable = context.configuration.eventCoordinator.getCustomEventObservable(this.config.id);
         this._eventObserver = observable.add((eventData) => {
             this.eventData.setValue(eventData, context);
             this._execute(context);
         });
     }
     public _cancelPendingTasks(context: FlowGraphContext): void {
-        const observable = context.configuration.eventCoordinator.getCustomEventObservable(this.config.eventId);
+        const observable = context.configuration.eventCoordinator.getCustomEventObservable(this.config.id);
         if (observable) {
             observable.remove(this._eventObserver);
         } else {
-            Tools.Warn(`FlowGraphReceiveCustomEventBlock: Missing observable for event ${this.config.eventId}`);
+            Tools.Warn(`FlowGraphReceiveCustomEventBlock: Missing observable for event ${this.config.id}`);
         }
     }
 

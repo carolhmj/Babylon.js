@@ -1,18 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import type { IKHRInteractivity, IKHRInteractivity_Node } from "babylonjs-gltf2interface";
+import type { IKHRInteractivity } from "babylonjs-gltf2interface";
 import { GLTFLoader } from "../glTFLoader";
 import type { IGLTFLoaderExtension } from "../glTFLoaderExtension";
-import type { FlowGraphBlock, IFlowGraphBlockConfiguration } from "core/FlowGraph";
-import {
-    FlowGraphCoordinator,
-    FlowGraphGetPropertyBlock,
-    FlowGraphRotate3dVector3Block,
-    FlowGraphSceneReadyEventBlock,
-    FlowGraphSequenceBlock,
-    FlowGraphSetPropertyBlock,
-    FlowGraphTimerBlock,
-} from "core/FlowGraph";
+import type { FlowGraphBlock } from "core/FlowGraph";
+import { FlowGraphCoordinator, FlowGraphEventBlock } from "core/FlowGraph";
 import type { FlowGraphDataConnection } from "core/FlowGraph/flowGraphDataConnection";
+import { createNode } from "./Interactivity/FlowGraphBlockParser";
 
 const NAME = "KHR_interactivity";
 
@@ -34,16 +27,6 @@ export class KHR_interactivity implements IGLTFLoaderExtension {
     // TODO: correct value?
     public order = 195;
 
-    // TODO should it move to a structure in the flowgraph package?
-    private _nodesToTypeMapping: { [type: string]: typeof FlowGraphBlock } = {
-        "lifecycle/onStart": FlowGraphSceneReadyEventBlock,
-        "flow/sequence": FlowGraphSequenceBlock,
-        "flow/delay": FlowGraphTimerBlock,
-        rotate3d: FlowGraphRotate3dVector3Block,
-        "world/set": FlowGraphSetPropertyBlock,
-        "world/get": FlowGraphGetPropertyBlock,
-    };
-
     /**
      * @internal
      * @param _loader
@@ -54,26 +37,6 @@ export class KHR_interactivity implements IGLTFLoaderExtension {
 
     public dispose() {
         (this._loader as any) = null;
-    }
-
-    private _buildConfiguration(node: IKHRInteractivity_Node): IFlowGraphBlockConfiguration {
-        const nodeConfig = node.configuration ?? [];
-        const resultConfig: any = {};
-        for (const prop of nodeConfig) {
-            resultConfig[prop.id] = prop.value;
-        }
-        return resultConfig;
-    }
-
-    private _createNode(node: IKHRInteractivity_Node): FlowGraphBlock {
-        const type = node.type;
-        const configuration = this._buildConfiguration(node);
-        if (type in this._nodesToTypeMapping) {
-            const instantiatedNode = new this._nodesToTypeMapping[type](configuration);
-            return instantiatedNode;
-        } else {
-            throw new Error(`Unknown node type ${type}`);
-        }
     }
 
     public onReady(): void {
@@ -87,10 +50,17 @@ export class KHR_interactivity implements IGLTFLoaderExtension {
         const flowGraph = flowGraphCoordinator.createGraph();
         const flowGraphContext = flowGraph.createContext();
 
+        const idToNode: Map<number, FlowGraphBlock> = new Map();
+
         const nodes: FlowGraphBlock[] = [];
         // First, create all the nodes
         for (const node of definition.nodes) {
-            const createdNode = this._createNode(node);
+            const createdNode = createNode(node, definition);
+            idToNode.set(node.id, createdNode);
+            // todo: another way of identifying event blocks instead of instanceof?
+            if (createdNode instanceof FlowGraphEventBlock) {
+                flowGraph.addEventBlock(createdNode);
+            }
             nodes.push(createdNode);
         }
 
@@ -101,7 +71,7 @@ export class KHR_interactivity implements IGLTFLoaderExtension {
             const nodeFlows = node.flows ?? [];
             for (let j = 0; j < nodeFlows.length; j++) {
                 const flow = node.flows[j];
-                const createdConnectedNode = nodes[flow.node];
+                const createdConnectedNode = idToNode.get(flow.node);
                 if (!createdConnectedNode) {
                     throw new Error("Invalid flow definition: " + JSON.stringify(flow));
                 }
@@ -133,6 +103,7 @@ export class KHR_interactivity implements IGLTFLoaderExtension {
             }
         }
         console.log("constructed graph", flowGraph);
+        flowGraphCoordinator.start();
     }
 }
 

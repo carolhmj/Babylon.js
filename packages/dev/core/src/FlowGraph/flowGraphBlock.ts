@@ -9,6 +9,7 @@ import type { Nullable } from "../types";
 
 export interface IFlowGraphBlockConfiguration {
     name?: string;
+    [prop: string]: any;
 }
 
 /**
