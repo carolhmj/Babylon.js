@@ -3,6 +3,8 @@ import type { Scene } from "core/scene";
 import type { Animation } from "core/Animations/animation";
 import type { GLTFData } from "./glTFData";
 import { _Exporter } from "./glTFExporter";
+import type { FlowGraph } from "core/FlowGraph/flowGraph";
+import type { FlowGraphContext } from "core/FlowGraph/flowGraphContext";
 
 /**
  * Holds a collection of exporter options and parameters
@@ -54,6 +56,14 @@ export interface IExportOptions {
      * @deprecated Please use removeNoopRootNodes instead
      */
     includeCoordinateSystemConversionNodes?: boolean;
+
+    /**
+     * The flow graph to export with the KHR_interactivity extension
+     */
+    flowGraphOptions?: {
+        flowGraph: FlowGraph;
+        flowGraphContext: FlowGraphContext;
+    };
 }
 
 /**
