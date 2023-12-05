@@ -4,55 +4,42 @@ import { FlowGraphEventBlock } from "../../flowGraphEventBlock";
 import type { Nullable } from "../../../types";
 import { Tools } from "../../../Misc/tools";
 import { RichTypeAny } from "../../flowGraphRichTypes";
-import type { IFlowGraphBlockConfiguration } from "../../flowGraphBlock";
 import { RegisterClass } from "../../../Misc/typeStore";
-/**
- * @experimental
- * Parameters used to create a FlowGraphReceiveCustomEventBlock.
- */
-export interface IFlowGraphReceiveCustomEventBlockConfiguration extends IFlowGraphBlockConfiguration {
-    /**
-     * The id of the event to receive.
-     */
-    eventId: string;
-    /**
-     * The names of the data outputs for that event. Should be in the same order as the event data in
-     * SendCustomEvent
-     */
-    eventData: string[];
-}
+import type { IFlowGraphCustomEvent } from "../../flowGraphCustomEvent";
+import { _checkEventDataTypes } from "core/FlowGraph/utils";
 
 /**
  * @experimental
  * A block that receives a custom event. It saves the data sent in the eventData output.
  */
 export class FlowGraphReceiveCustomEventBlock extends FlowGraphEventBlock {
-    private _eventObserver: Nullable<Observer<any>>;
-
-    constructor(public config: IFlowGraphReceiveCustomEventBlockConfiguration) {
+    constructor(public config: IFlowGraphCustomEvent) {
         super(config);
-    }
-
-    public configure(): void {
-        super.configure();
         for (let i = 0; i < this.config.eventData.length; i++) {
-            const dataName = this.config.eventData[i];
-            this.registerDataOutput(dataName, RichTypeAny);
+            const eventData = this.config.eventData[i];
+            this.registerDataOutput(eventData.id, RichTypeAny);
         }
     }
+
     public _preparePendingTasks(context: FlowGraphContext): void {
         const observable = context.configuration.coordinator.getCustomEventObservable(this.config.eventId);
-        this._eventObserver = observable.add((eventDatas: any[]) => {
-            for (let i = 0; i < eventDatas.length; i++) {
-                this.dataOutputs[i].setValue(eventDatas[i], context);
-            }
-            this._execute(context);
-        });
+        if (!context._getExecutionVariable(this, "eventObserver")) {
+            const eventObserver = observable.add((eventDatas: any[]) => {
+                // Check types of data
+                _checkEventDataTypes(eventDatas, this.config);
+                for (let i = 0; i < eventDatas.length; i++) {
+                    this.dataOutputs[i].setValue(eventDatas[i], context);
+                }
+                this._execute(context);
+            });
+            context._setExecutionVariable(this, "eventObserver", eventObserver);
+        }
     }
     public _cancelPendingTasks(context: FlowGraphContext): void {
         const observable = context.configuration.coordinator.getCustomEventObservable(this.config.eventId);
+        const observer = context._getExecutionVariable(this, "eventObserver") as Nullable<Observer<any[]>>;
         if (observable) {
-            observable.remove(this._eventObserver);
+            observable.remove(observer);
         } else {
             Tools.Warn(`FlowGraphReceiveCustomEventBlock: Missing observable for event ${this.config.eventId}`);
         }

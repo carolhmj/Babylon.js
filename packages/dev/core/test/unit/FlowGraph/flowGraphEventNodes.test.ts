@@ -12,6 +12,8 @@ import {
     FlowGraphSceneReadyEventBlock,
     FlowGraphSendCustomEventBlock,
 } from "core/FlowGraph";
+import type { IFlowGraphCustomEvent } from "core/FlowGraph/flowGraphCustomEvent";
+import { Vector2 } from "core/Maths";
 import { Mesh } from "core/Meshes";
 import { Scene } from "core/scene";
 
@@ -44,13 +46,18 @@ describe("Flow Graph Event Nodes", () => {
         const sceneReady = new FlowGraphSceneReadyEventBlock({ name: "SceneReady" });
         flowGraph.addEventBlock(sceneReady);
 
-        const sendEvent = new FlowGraphSendCustomEventBlock({ eventId: "testEvent", eventData: ["testData"] });
+        const customEvent: IFlowGraphCustomEvent = {
+            eventId: "testEvent",
+            eventData: [{ id: "testData", type: "number", description: "" }],
+        };
+
+        const sendEvent = new FlowGraphSendCustomEventBlock(customEvent);
         const sendEventDataNode = sendEvent.getDataInput("testData");
         expect(sendEventDataNode).toBeDefined();
         sendEventDataNode?.setValue(42, flowGraphContext);
         sceneReady.out.connectTo(sendEvent.in);
 
-        const receiveEvent = new FlowGraphReceiveCustomEventBlock({ eventId: "testEvent", eventData: ["testData"] });
+        const receiveEvent = new FlowGraphReceiveCustomEventBlock(customEvent);
         receiverGraph.addEventBlock(receiveEvent);
 
         const consoleLogBlock = new FlowGraphConsoleLogBlock({ name: "Log" });
@@ -66,6 +73,40 @@ describe("Flow Graph Event Nodes", () => {
         scene.onReadyObservable.notifyObservers(scene);
 
         expect(console.log).toHaveBeenCalledWith(42);
+    });
+
+    it("Send wrong type of data to Custom Event", () => {
+        const receiverGraph = flowGraphCoordinator.createGraph();
+
+        const sceneReady = new FlowGraphSceneReadyEventBlock({ name: "SceneReady" });
+        flowGraph.addEventBlock(sceneReady);
+
+        const customEvent: IFlowGraphCustomEvent = {
+            eventId: "testEvent",
+            eventData: [{ id: "testData", type: "number", description: "" }],
+        };
+
+        const sendEvent = new FlowGraphSendCustomEventBlock(customEvent);
+        const sendEventDataNode = sendEvent.getDataInput("testData");
+        expect(sendEventDataNode).toBeDefined();
+        // Expects a number but is sending a vector2
+        sendEventDataNode?.setValue(new Vector2(0, 1), flowGraphContext);
+        sceneReady.out.connectTo(sendEvent.in);
+
+        const receiveEvent = new FlowGraphReceiveCustomEventBlock(customEvent);
+        receiverGraph.addEventBlock(receiveEvent);
+
+        const consoleLogBlock = new FlowGraphConsoleLogBlock({ name: "Log" });
+        receiveEvent.out.connectTo(consoleLogBlock.in);
+        const receiveEventDataNode = receiveEvent.getDataOutput("testData");
+        expect(receiveEventDataNode).toBeDefined();
+        receiveEventDataNode?.connectTo(consoleLogBlock.message);
+
+        flowGraph.start();
+        receiverGraph.start();
+
+        // This will activate the sendEvent block and send the event to the receiverGraph
+        expect(() => scene.onReadyObservable.notifyObservers(scene)).toThrow();
     });
 
     it("Mesh Pick Event Bubbling", () => {

@@ -1,10 +1,17 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import type { IKHRInteractivity, IKHRInteractivity_Configuration, IKHRInteractivity_Node, IKHRInteractivity_Variable } from "babylonjs-gltf2interface";
+import type {
+    IKHRInteractivity,
+    IKHRInteractivity_Configuration,
+    IKHRInteractivity_CustomEventValue,
+    IKHRInteractivity_Node,
+    IKHRInteractivity_Variable,
+} from "babylonjs-gltf2interface";
 import type { IFlowGraphBlockConfiguration } from "core/FlowGraph/flowGraphBlock";
 import type { ISerializedFlowGraph, ISerializedFlowGraphBlock, ISerializedFlowGraphConnection, ISerializedFlowGraphContext } from "core/FlowGraph/typeDefinitions";
 import { RandomGUID } from "core/Misc/guid";
 import { gltfToFlowGraphTypeMap, gltfTypeToBabylonType } from "./interactivityUtils";
 import { FlowGraphConnectionType } from "core/FlowGraph/flowGraphConnection";
+import type { IFlowGraphCustomEvent } from "core/FlowGraph/flowGraphCustomEvent";
 
 function convertValueWithType(configObject: IKHRInteractivity_Configuration, definition: IKHRInteractivity, context: string) {
     if (configObject.type !== undefined) {
@@ -27,17 +34,35 @@ function convertValueWithType(configObject: IKHRInteractivity_Configuration, def
     }
 }
 
+function convertEventType(event: IKHRInteractivity_CustomEventValue, description: IKHRInteractivity) {
+    const eventType = event.type;
+    const type = description.types && description.types[eventType];
+    if (!type) {
+        throw new Error(`/extensions/KHR_interactivity/customEvents/${event.id}: Unknown type: ${eventType}`);
+    }
+    const signature = type.signature;
+    if (!signature) {
+        throw new Error(`/extensions/KHR_interactivity/customEvents/${event.id}: Type ${eventType} has no signature`);
+    }
+    return gltfTypeToBabylonType[signature];
+}
+
 function convertConfiguration(gltfBlock: IKHRInteractivity_Node, definition: IKHRInteractivity, id: string): IFlowGraphBlockConfiguration {
     const converted: IFlowGraphBlockConfiguration = {};
     const configurationList: IKHRInteractivity_Configuration[] = gltfBlock.configuration ?? [];
     for (const configObject of configurationList) {
         if (configObject.id === "customEvent") {
+            const convertedAsEvent = converted as IFlowGraphCustomEvent;
             const customEvent = definition.customEvents && definition.customEvents[configObject.value];
             if (!customEvent) {
                 throw new Error(`/extensions/KHR_interactivity/nodes/${id}: Unknown custom event: ${configObject.value}`);
             }
-            converted.eventId = customEvent.id;
-            converted.eventData = customEvent.values.map((v) => v.id);
+            convertedAsEvent.eventId = customEvent.id;
+            convertedAsEvent.eventData = customEvent.values.map((v) => ({
+                id: v.id,
+                description: v.description,
+                type: convertEventType(v, definition),
+            }));
         } else if (configObject.id === "variable") {
             const variable = definition.variables && definition.variables[configObject.value];
             if (!variable) {
@@ -119,7 +144,7 @@ export function convertGLTFToSerializedFlowGraph(gltf: IKHRInteractivity): ISeri
             const socketOut: ISerializedFlowGraphConnection = {
                 uniqueId: RandomGUID(),
                 name: socketOutName,
-                _connectionType: 1, // Output
+                _connectionType: FlowGraphConnectionType.Output,
                 connectedPointIds: [],
             };
             fgBlock.signalOutputs.push(socketOut);
@@ -140,7 +165,7 @@ export function convertGLTFToSerializedFlowGraph(gltf: IKHRInteractivity): ISeri
                 socketIn = {
                     uniqueId: RandomGUID(),
                     name: nodeInSocketName,
-                    _connectionType: 0, // Input
+                    _connectionType: FlowGraphConnectionType.Input,
                     connectedPointIds: [],
                 };
                 nodeIn.signalInputs.push(socketIn);
