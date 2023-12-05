@@ -22,8 +22,9 @@ export function _checkEventDataTypes(dataList: any[], event: IFlowGraphCustomEve
     for (let i = 0; i < dataList.length; i++) {
         const eventData = dataList[i];
         const expectedType = event.eventData[i].type;
-        if (typeof eventData !== expectedType) {
-            throw new Error(`Event data type mismatch. Expected ${expectedType}, got ${typeof eventData} for event ${eventId}`);
+        const type = eventData.getClassName ? eventData.getClassName() : typeof eventData;
+        if (type !== expectedType) {
+            throw new Error(`Event data type mismatch. Expected ${expectedType}, got ${typeof eventData} for event ${event.eventId}`);
         }
     }
 }
