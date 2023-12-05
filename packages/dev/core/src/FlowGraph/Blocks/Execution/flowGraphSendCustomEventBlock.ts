@@ -2,41 +2,26 @@ import { RichTypeAny } from "core/FlowGraph/flowGraphRichTypes";
 import { FlowGraphExecutionBlockWithOutSignal } from "../../flowGraphWithOnDoneExecutionBlock";
 import type { FlowGraphContext } from "../../flowGraphContext";
 import { RegisterClass } from "../../../Misc/typeStore";
-import type { IFlowGraphBlockConfiguration } from "../../flowGraphBlock";
+import type { IFlowGraphCustomEvent } from "../../flowGraphCustomEvent";
+import { _checkEventDataTypes } from "core/FlowGraph/utils";
 
-/**
- * @experimental
- * Parameters used to create a FlowGraphSendCustomEventBlock.
- */
-export interface IFlowGraphSendCustomEventBlockConfiguration extends IFlowGraphBlockConfiguration {
-    /**
-     * The id of the event to send.
-     */
-    eventId: string;
-    /**
-     * The names of the data inputs for that event.
-     */
-    eventData: string[];
-}
 /**
  * @experimental
  */
 export class FlowGraphSendCustomEventBlock extends FlowGraphExecutionBlockWithOutSignal {
-    public constructor(public config: IFlowGraphSendCustomEventBlockConfiguration) {
+    public constructor(public config: IFlowGraphCustomEvent) {
         super(config);
-    }
-
-    public configure(): void {
-        super.configure();
         for (let i = 0; i < this.config.eventData.length; i++) {
-            const dataName = this.config.eventData[i];
-            this.registerDataInput(dataName, RichTypeAny);
+            const eventData = this.config.eventData[i];
+            this.registerDataInput(eventData.id, RichTypeAny);
         }
     }
 
     public _execute(context: FlowGraphContext): void {
         const eventId = this.config.eventId;
         const eventDatas = this.dataInputs.map((port) => port.getValue(context));
+        // Check types of eventDatas
+        _checkEventDataTypes(eventDatas, this.config);
 
         context.configuration.coordinator.notifyCustomEvent(eventId, eventDatas);
 

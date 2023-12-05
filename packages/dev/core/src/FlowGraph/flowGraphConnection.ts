@@ -7,8 +7,8 @@ import type { FlowGraphBlock } from "./flowGraphBlock";
  * The type of a connection point - inpput or output.
  */
 export enum FlowGraphConnectionType {
-    Input,
-    Output,
+    Input = 0,
+    Output = 1,
 }
 
 /**
