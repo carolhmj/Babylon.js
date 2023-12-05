@@ -82,8 +82,8 @@ export class FlowGraphBlock {
     public serialize(serializationObject: any = {}, _valueSerializeFunction: (key: string, value: any, serializationObject: any) => any = defaultValueSerializationFunction) {
         serializationObject.uniqueId = this.uniqueId;
         serializationObject.config = {};
-        if (this.config) {
-            serializationObject.config["name"] = this.config.name;
+        if (this.config && this.config.name) {
+            serializationObject.config.name = this.config.name;
         }
         serializationObject.dataInputs = [];
         serializationObject.dataOutputs = [];
