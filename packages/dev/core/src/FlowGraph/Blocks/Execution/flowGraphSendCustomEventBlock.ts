@@ -34,8 +34,8 @@ export class FlowGraphSendCustomEventBlock extends FlowGraphExecutionBlockWithOu
 
     public serialize(serializationObject?: any): void {
         super.serialize(serializationObject);
-        serializationObject.eventId = this.config.eventId;
-        serializationObject.eventData = this.config.eventData;
+        serializationObject.config.eventId = this.config.eventId;
+        serializationObject.config.eventData = this.config.eventData;
     }
 
     public static ClassName = "FGSendCustomEventBlock";
