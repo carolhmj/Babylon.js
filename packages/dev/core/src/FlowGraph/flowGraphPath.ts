@@ -17,12 +17,27 @@ interface IPathPart {
  * An extension to add new functionality to path resolution
  */
 export interface IPathExtension {
+    /**
+     * Should the path be processed by this extension?
+     * @param path
+     */
     shouldProcess(path: FlowGraphPath): boolean;
+    /**
+     * Get the path in the extension context
+     * @param path
+     * @param context
+     */
     processGet(path: FlowGraphPath, context: FlowGraphContext): any;
+    /**
+     * Set the path in the extension context
+     * @param path
+     * @param context
+     * @param value
+     */
     processSet(path: FlowGraphPath, context: FlowGraphContext, value: any): void;
 }
 
-/*
+/**
  * @experimental
  * This class represents a path of type /x/{y}/z/.../w that is evaluated
  * on a target object. The string between curly braces ({y} in the example)

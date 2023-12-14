@@ -11,6 +11,9 @@ import { _isADescendantOf } from "../../utils";
  * @experimental
  */
 export interface IFlowGraphMeshPickEventBlockConfiguration extends IFlowGraphBlockConfiguration {
+    /**
+     * The path to the mesh that is being picked.
+     */
     path: FlowGraphPath;
 }
 /**

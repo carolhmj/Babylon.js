@@ -138,6 +138,9 @@ export class Node implements IBehaviorAware<Node> {
 
     protected _accessibilityTag: Nullable<IAccessibilityTag> = null;
 
+    /**
+     * Observable for when the accessibility tag changes
+     */
     public onAccessibilityTagChangedObservable = new Observable<Nullable<IAccessibilityTag>>();
 
     /**

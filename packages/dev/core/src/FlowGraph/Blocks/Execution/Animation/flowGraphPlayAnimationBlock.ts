@@ -12,7 +12,13 @@ import { FlowGraphPathComponent } from "../../../flowGraphPathComponent";
  * @experimental
  */
 export interface IFlowGraphPlayAnimationBlockConfiguration extends IFlowGraphBlockConfiguration {
+    /**
+     * The path to the animatable object.
+     */
     targetPath: FlowGraphPath;
+    /**
+     * The path to the animation.
+     */
     animationPath: FlowGraphPath;
 }
 /**

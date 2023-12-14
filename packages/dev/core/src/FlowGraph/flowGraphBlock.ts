@@ -9,7 +9,14 @@ import { FlowGraphExecutionBlock } from "./flowGraphExecutionBlock";
 import { defaultValueParseFunction, defaultValueSerializationFunction } from "./serialization";
 import type { Scene } from "../scene";
 
+/**
+ * @experimental
+ * Configuration for a flow graph block.
+ */
 export interface IFlowGraphBlockConfiguration {
+    /**
+     * The name of the block.
+     */
     name?: string;
     [extraPropertyKey: string]: any;
 }

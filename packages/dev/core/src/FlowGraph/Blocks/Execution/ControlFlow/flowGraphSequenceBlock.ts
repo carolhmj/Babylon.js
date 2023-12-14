@@ -4,11 +4,20 @@ import type { FlowGraphContext } from "../../../flowGraphContext";
 import { FlowGraphExecutionBlock } from "../../../flowGraphExecutionBlock";
 import type { FlowGraphSignalConnection } from "../../../flowGraphSignalConnection";
 
+/**
+ * @experimental
+ */
 export interface IFlowGraphSequenceBlockConfiguration extends IFlowGraphBlockConfiguration {
+    /**
+     * The number of output flows.
+     */
     numberOutputFlows: number;
 }
 
 export class FlowGraphSequenceBlock extends FlowGraphExecutionBlock {
+    /**
+     * Output connections: The output flows.
+     */
     public outFlows: FlowGraphSignalConnection[];
 
     constructor(public config: IFlowGraphSequenceBlockConfiguration) {

@@ -83,6 +83,10 @@ export class FlowGraphSubtractBlock extends FlowGraphBinaryOperationBlock<any, a
 }
 RegisterClass(FlowGraphSubtractBlock.ClassName, FlowGraphSubtractBlock);
 
+/**
+ * @experimental
+ * Multiplication block
+ */
 export class FlowGraphMultiplyBlock extends FlowGraphBinaryOperationBlock<any, any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, RichTypeAny, (a, b) => this._polymorphicMultiply(a, b), FlowGraphMultiplyBlock.ClassName, config);
@@ -102,6 +106,10 @@ export class FlowGraphMultiplyBlock extends FlowGraphBinaryOperationBlock<any, a
 }
 RegisterClass(FlowGraphMultiplyBlock.ClassName, FlowGraphMultiplyBlock);
 
+/**
+ * @experimental
+ * Division block
+ */
 export class FlowGraphDivideBlock extends FlowGraphBinaryOperationBlock<any, any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, RichTypeAny, (a, b) => this._polymorphicDivide(a, b), FlowGraphDivideBlock.ClassName, config);
@@ -121,6 +129,10 @@ export class FlowGraphDivideBlock extends FlowGraphBinaryOperationBlock<any, any
 }
 RegisterClass(FlowGraphDivideBlock.ClassName, FlowGraphDivideBlock);
 
+/**
+ * @experimental
+ * Random value block
+ */
 export class FlowGraphRandomBlock extends FlowGraphConstantOperationBlock<number> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeNumber, () => Math.random(), FlowGraphRandomBlock.ClassName, config);
@@ -130,6 +142,10 @@ export class FlowGraphRandomBlock extends FlowGraphConstantOperationBlock<number
 }
 RegisterClass(FlowGraphRandomBlock.ClassName, FlowGraphRandomBlock);
 
+/**
+ * @experimental
+ * Dot product block
+ */
 export class FlowGraphDotBlock extends FlowGraphBinaryOperationBlock<any, any, number> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, RichTypeNumber, (a, b) => this._polymorphicDot(a, b), FlowGraphDotBlock.ClassName, config);
@@ -153,6 +169,10 @@ export class FlowGraphDotBlock extends FlowGraphBinaryOperationBlock<any, any, n
 }
 RegisterClass(FlowGraphDotBlock.ClassName, FlowGraphDotBlock);
 
+/**
+ * @experimental
+ * E constant block
+ */
 export class FlowGraphEBlock extends FlowGraphConstantOperationBlock<number> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeNumber, () => Math.E, FlowGraphEBlock.ClassName, config);
@@ -162,6 +182,10 @@ export class FlowGraphEBlock extends FlowGraphConstantOperationBlock<number> {
 }
 RegisterClass(FlowGraphEBlock.ClassName, FlowGraphEBlock);
 
+/**
+ * @experimental
+ * PI constant block
+ */
 export class FlowGraphPiBlock extends FlowGraphConstantOperationBlock<number> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeNumber, () => Math.PI, FlowGraphPiBlock.ClassName, config);
@@ -171,6 +195,10 @@ export class FlowGraphPiBlock extends FlowGraphConstantOperationBlock<number> {
 }
 RegisterClass(FlowGraphPiBlock.ClassName, FlowGraphPiBlock);
 
+/**
+ * @experimental
+ * INF constant block
+ */
 export class FlowGraphInfBlock extends FlowGraphConstantOperationBlock<number> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeNumber, () => Number.POSITIVE_INFINITY, FlowGraphInfBlock.ClassName, config);
@@ -180,6 +208,10 @@ export class FlowGraphInfBlock extends FlowGraphConstantOperationBlock<number> {
 }
 RegisterClass(FlowGraphInfBlock.ClassName, FlowGraphInfBlock);
 
+/**
+ * @experimental
+ * NaN constant block
+ */
 export class FlowGraphNaNBlock extends FlowGraphConstantOperationBlock<number> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeNumber, () => Number.NaN, FlowGraphNaNBlock.ClassName, config);
@@ -203,6 +235,10 @@ function _componentWiseUnaryOperation(a: any, op: (a: any) => any) {
     }
 }
 
+/**
+ * @experimental
+ * Absolute value block
+ */
 export class FlowGraphAbsBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicAbs(a), FlowGraphAbsBlock.ClassName, config);
@@ -216,6 +252,10 @@ export class FlowGraphAbsBlock extends FlowGraphUnaryOperationBlock<any, any> {
 }
 RegisterClass(FlowGraphAbsBlock.ClassName, FlowGraphAbsBlock);
 
+/**
+ * @experimental
+ * Sign block
+ */
 export class FlowGraphSignBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicSign(a), FlowGraphSignBlock.ClassName, config);
@@ -229,6 +269,10 @@ export class FlowGraphSignBlock extends FlowGraphUnaryOperationBlock<any, any> {
 }
 RegisterClass(FlowGraphSignBlock.ClassName, FlowGraphSignBlock);
 
+/**
+ * @experimental
+ * Truncate block
+ */
 export class FlowGraphTruncBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicTrunc(a), FlowGraphTruncBlock.ClassName, config);
@@ -242,6 +286,10 @@ export class FlowGraphTruncBlock extends FlowGraphUnaryOperationBlock<any, any> 
 }
 RegisterClass(FlowGraphTruncBlock.ClassName, FlowGraphTruncBlock);
 
+/**
+ * @experimental
+ * Floor block
+ */
 export class FlowGraphFloorBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicFloor(a), FlowGraphFloorBlock.ClassName, config);
@@ -255,6 +303,10 @@ export class FlowGraphFloorBlock extends FlowGraphUnaryOperationBlock<any, any> 
 }
 RegisterClass(FlowGraphFloorBlock.ClassName, FlowGraphFloorBlock);
 
+/**
+ * @experimental
+ * Ceil block
+ */
 export class FlowGraphCeilBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicCeiling(a), FlowGraphCeilBlock.ClassName, config);
@@ -268,6 +320,10 @@ export class FlowGraphCeilBlock extends FlowGraphUnaryOperationBlock<any, any> {
 }
 RegisterClass(FlowGraphCeilBlock.ClassName, FlowGraphCeilBlock);
 
+/**
+ * @experimental
+ * Fract block
+ */
 export class FlowGraphFractBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicFract(a), FlowGraphFractBlock.ClassName, config);
@@ -281,6 +337,10 @@ export class FlowGraphFractBlock extends FlowGraphUnaryOperationBlock<any, any> 
 }
 RegisterClass(FlowGraphFractBlock.ClassName, FlowGraphFractBlock);
 
+/**
+ * @experimental
+ * Neg block
+ */
 export class FlowGraphNegBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicNeg(a), FlowGraphNegBlock.ClassName, config);
@@ -308,6 +368,10 @@ function _componentWiseBinaryOperation(a: any, b: any, op: (a: any, b: any) => a
     }
 }
 
+/**
+ * @experimental
+ * Remainder block
+ */
 export class FlowGraphRemainderBlock extends FlowGraphBinaryOperationBlock<any, any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, RichTypeAny, (a, b) => this._polymorphicRemainder(a, b), FlowGraphRemainderBlock.ClassName, config);
@@ -321,6 +385,10 @@ export class FlowGraphRemainderBlock extends FlowGraphBinaryOperationBlock<any, 
 }
 RegisterClass(FlowGraphRemainderBlock.ClassName, FlowGraphRemainderBlock);
 
+/**
+ * @experimental
+ * Min block
+ */
 export class FlowGraphMinBlock extends FlowGraphBinaryOperationBlock<any, any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, RichTypeAny, (a, b) => this._polymorphicMin(a, b), FlowGraphMinBlock.ClassName, config);
@@ -334,6 +402,10 @@ export class FlowGraphMinBlock extends FlowGraphBinaryOperationBlock<any, any, a
 }
 RegisterClass(FlowGraphMinBlock.ClassName, FlowGraphMinBlock);
 
+/**
+ * @experimental
+ * Max block
+ */
 export class FlowGraphMaxBlock extends FlowGraphBinaryOperationBlock<any, any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, RichTypeAny, (a, b) => this._polymorphicMax(a, b), FlowGraphMaxBlock.ClassName, config);
@@ -365,6 +437,10 @@ function _componentWiseTernaryOperation(a: any, b: any, c: any, op: (a: any, b: 
     }
 }
 
+/**
+ * @experimental
+ * Clamp block
+ */
 export class FlowGraphClampBlock extends FlowGraphTernaryOperationBlock<any, any, any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, RichTypeAny, RichTypeAny, (a, b, c) => this._polymorphicClamp(a, b, c), FlowGraphClampBlock.ClassName, config);
@@ -378,6 +454,10 @@ export class FlowGraphClampBlock extends FlowGraphTernaryOperationBlock<any, any
 }
 RegisterClass(FlowGraphClampBlock.ClassName, FlowGraphClampBlock);
 
+/**
+ * @experimental
+ * Saturate block
+ */
 export class FlowGraphSaturateBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicSaturate(a), FlowGraphSaturateBlock.ClassName, config);
@@ -391,6 +471,10 @@ export class FlowGraphSaturateBlock extends FlowGraphUnaryOperationBlock<any, an
 }
 RegisterClass(FlowGraphSaturateBlock.ClassName, FlowGraphSaturateBlock);
 
+/**
+ * @experimental
+ * Interpolate block
+ */
 export class FlowGraphInterpolateBlock extends FlowGraphTernaryOperationBlock<any, any, any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, RichTypeAny, RichTypeAny, (a, b, c) => this._polymorphicInterpolate(a, b, c), FlowGraphInterpolateBlock.ClassName, config);
@@ -408,6 +492,10 @@ export class FlowGraphInterpolateBlock extends FlowGraphTernaryOperationBlock<an
 }
 RegisterClass(FlowGraphInterpolateBlock.ClassName, FlowGraphInterpolateBlock);
 
+/**
+ * @experimental
+ * Equals block
+ */
 export class FlowGraphEqBlock extends FlowGraphBinaryOperationBlock<any, any, boolean> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, RichTypeBoolean, (a, b) => this._polymorphicEq(a, b), FlowGraphEqBlock.ClassName, config);
@@ -427,6 +515,10 @@ export class FlowGraphEqBlock extends FlowGraphBinaryOperationBlock<any, any, bo
 }
 RegisterClass(FlowGraphEqBlock.ClassName, FlowGraphEqBlock);
 
+/**
+ * @experimental
+ * Less than block
+ */
 export class FlowGraphLessThanBlock extends FlowGraphBinaryOperationBlock<any, any, boolean> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, RichTypeBoolean, (a, b) => this._polymorphicLessThan(a, b), FlowGraphLessThanBlock.ClassName, config);
@@ -450,6 +542,10 @@ export class FlowGraphLessThanBlock extends FlowGraphBinaryOperationBlock<any, a
 }
 RegisterClass(FlowGraphLessThanBlock.ClassName, FlowGraphLessThanBlock);
 
+/**
+ * @experimental
+ * Less than or equal block
+ */
 export class FlowGraphLessThanOrEqualBlock extends FlowGraphBinaryOperationBlock<any, any, boolean> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, RichTypeBoolean, (a, b) => this._polymorphicLessThanOrEqual(a, b), FlowGraphLessThanOrEqualBlock.ClassName, config);
@@ -472,6 +568,10 @@ export class FlowGraphLessThanOrEqualBlock extends FlowGraphBinaryOperationBlock
     public static ClassName = "FGLessThanOrEqualBlock";
 }
 
+/**
+ * @experimental
+ * Greater than block
+ */
 export class FlowGraphGreaterThanBlock extends FlowGraphBinaryOperationBlock<any, any, boolean> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, RichTypeBoolean, (a, b) => this._polymorphicGreaterThan(a, b), FlowGraphGreaterThanBlock.ClassName, config);
@@ -495,6 +595,10 @@ export class FlowGraphGreaterThanBlock extends FlowGraphBinaryOperationBlock<any
 }
 RegisterClass(FlowGraphGreaterThanBlock.ClassName, FlowGraphGreaterThanBlock);
 
+/**
+ * @experimental
+ * Greater than or equal block
+ */
 export class FlowGraphGreaterThanOrEqualBlock extends FlowGraphBinaryOperationBlock<any, any, boolean> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, RichTypeBoolean, (a, b) => this._polymorphicGreaterThanOrEqual(a, b), FlowGraphGreaterThanOrEqualBlock.ClassName, config);
@@ -518,6 +622,10 @@ export class FlowGraphGreaterThanOrEqualBlock extends FlowGraphBinaryOperationBl
 }
 RegisterClass(FlowGraphGreaterThanOrEqualBlock.ClassName, FlowGraphGreaterThanOrEqualBlock);
 
+/**
+ * @experimental
+ * IsNaN block
+ */
 export class FlowGraphIsNanBlock extends FlowGraphUnaryOperationBlock<any, boolean> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeBoolean, (a) => this._polymorphicIsNan(a), FlowGraphIsNanBlock.ClassName, config);
@@ -541,6 +649,10 @@ export class FlowGraphIsNanBlock extends FlowGraphUnaryOperationBlock<any, boole
 }
 RegisterClass(FlowGraphIsNanBlock.ClassName, FlowGraphIsNanBlock);
 
+/**
+ * @experimental
+ * IsInf block
+ */
 export class FlowGraphIsInfBlock extends FlowGraphUnaryOperationBlock<any, boolean> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeBoolean, (a) => this._polymorphicIsInf(a), FlowGraphIsInfBlock.ClassName, config);
@@ -563,6 +675,10 @@ export class FlowGraphIsInfBlock extends FlowGraphUnaryOperationBlock<any, boole
     public static ClassName = "FGIsInfBlock";
 }
 
+/**
+ * @experimental
+ * Degrees to rad block
+ */
 export class FlowGraphDegToRadBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicDegToRad(a), FlowGraphDegToRadBlock.ClassName, config);
@@ -580,6 +696,10 @@ export class FlowGraphDegToRadBlock extends FlowGraphUnaryOperationBlock<any, an
 }
 RegisterClass(FlowGraphDegToRadBlock.ClassName, FlowGraphDegToRadBlock);
 
+/**
+ * @experimental
+ * Radians to deg block
+ */
 export class FlowGraphRadToDegBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicRadToDeg(a), FlowGraphRadToDegBlock.ClassName, config);
@@ -597,6 +717,10 @@ export class FlowGraphRadToDegBlock extends FlowGraphUnaryOperationBlock<any, an
 }
 RegisterClass(FlowGraphRadToDegBlock.ClassName, FlowGraphRadToDegBlock);
 
+/**
+ * @experimental
+ * Sin block
+ */
 export class FlowGraphSinBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicSin(a), FlowGraphSinBlock.ClassName, config);
@@ -610,6 +734,10 @@ export class FlowGraphSinBlock extends FlowGraphUnaryOperationBlock<any, any> {
 }
 RegisterClass(FlowGraphSinBlock.ClassName, FlowGraphSinBlock);
 
+/**
+ * @experimental
+ * Cos block
+ */
 export class FlowGraphCosBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicCos(a), FlowGraphCosBlock.ClassName, config);
@@ -623,6 +751,10 @@ export class FlowGraphCosBlock extends FlowGraphUnaryOperationBlock<any, any> {
 }
 RegisterClass(FlowGraphCosBlock.ClassName, FlowGraphCosBlock);
 
+/**
+ * @experimental
+ * Tan block
+ */
 export class FlowGraphTanBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicTan(a), FlowGraphTanBlock.ClassName, config);
@@ -636,6 +768,10 @@ export class FlowGraphTanBlock extends FlowGraphUnaryOperationBlock<any, any> {
 }
 RegisterClass(FlowGraphTanBlock.ClassName, FlowGraphTanBlock);
 
+/**
+ * @experimental
+ * Arcsin block
+ */
 export class FlowGraphAsinBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicAsin(a), FlowGraphAsinBlock.ClassName, config);
@@ -649,6 +785,10 @@ export class FlowGraphAsinBlock extends FlowGraphUnaryOperationBlock<any, any> {
 }
 RegisterClass(FlowGraphAsinBlock.ClassName, FlowGraphAsinBlock);
 
+/**
+ * @experimental
+ * Arccos block
+ */
 export class FlowGraphAcosBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicAcos(a), FlowGraphAcosBlock.ClassName, config);
@@ -662,6 +802,10 @@ export class FlowGraphAcosBlock extends FlowGraphUnaryOperationBlock<any, any> {
 }
 RegisterClass(FlowGraphAcosBlock.ClassName, FlowGraphAcosBlock);
 
+/**
+ * @experimental
+ * Arctan block
+ */
 export class FlowGraphAtanBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicAtan(a), FlowGraphAtanBlock.ClassName, config);
@@ -675,6 +819,10 @@ export class FlowGraphAtanBlock extends FlowGraphUnaryOperationBlock<any, any> {
 }
 RegisterClass(FlowGraphAtanBlock.ClassName, FlowGraphAtanBlock);
 
+/**
+ * @experimental
+ * Arctan2 block
+ */
 export class FlowGraphAtan2Block extends FlowGraphBinaryOperationBlock<any, any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, RichTypeAny, (a, b) => this._polymorphicAtan2(a, b), FlowGraphAtan2Block.ClassName, config);
@@ -688,6 +836,10 @@ export class FlowGraphAtan2Block extends FlowGraphBinaryOperationBlock<any, any,
 }
 RegisterClass(FlowGraphAtan2Block.ClassName, FlowGraphAtan2Block);
 
+/**
+ * @experimental
+ * Sinh block
+ */
 export class FlowGraphSinhBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicSinh(a), FlowGraphSinhBlock.ClassName, config);
@@ -701,6 +853,10 @@ export class FlowGraphSinhBlock extends FlowGraphUnaryOperationBlock<any, any> {
 }
 RegisterClass(FlowGraphSinhBlock.ClassName, FlowGraphSinhBlock);
 
+/**
+ * @experimental
+ * Cosh block
+ */
 export class FlowGraphCoshBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicCosh(a), FlowGraphCoshBlock.ClassName, config);
@@ -714,6 +870,10 @@ export class FlowGraphCoshBlock extends FlowGraphUnaryOperationBlock<any, any> {
 }
 RegisterClass(FlowGraphCoshBlock.ClassName, FlowGraphCoshBlock);
 
+/**
+ * @experimental
+ * Tanh block
+ */
 export class FlowGraphTanhBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicTanh(a), FlowGraphTanhBlock.ClassName, config);
@@ -727,6 +887,10 @@ export class FlowGraphTanhBlock extends FlowGraphUnaryOperationBlock<any, any> {
 }
 RegisterClass(FlowGraphTanhBlock.ClassName, FlowGraphTanhBlock);
 
+/**
+ * @experimental
+ * Arsinh block
+ */
 export class FlowGraphAsinhBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeNumber, (a) => this._polymorphicAsinh(a), FlowGraphAsinhBlock.ClassName, config);
@@ -740,6 +904,10 @@ export class FlowGraphAsinhBlock extends FlowGraphUnaryOperationBlock<any, any> 
 }
 RegisterClass(FlowGraphAsinhBlock.ClassName, FlowGraphAsinhBlock);
 
+/**
+ * @experimental
+ * Arcosh block
+ */
 export class FlowGraphAcoshBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeNumber, (a) => this._polymorphicAcosh(a), FlowGraphAcoshBlock.ClassName, config);
@@ -753,6 +921,10 @@ export class FlowGraphAcoshBlock extends FlowGraphUnaryOperationBlock<any, any> 
 }
 RegisterClass(FlowGraphAcoshBlock.ClassName, FlowGraphAcoshBlock);
 
+/**
+ * @experimental
+ * Artanh block
+ */
 export class FlowGraphAtanhBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeNumber, (a) => this._polymorphicAtanh(a), FlowGraphAtanhBlock.ClassName, config);
@@ -766,6 +938,10 @@ export class FlowGraphAtanhBlock extends FlowGraphUnaryOperationBlock<any, any> 
 }
 RegisterClass(FlowGraphAtanhBlock.ClassName, FlowGraphAtanhBlock);
 
+/**
+ * @experimental
+ * Exp block
+ */
 export class FlowGraphExpBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeNumber, (a) => this._polymorphicExp(a), FlowGraphExpBlock.ClassName, config);
@@ -779,6 +955,10 @@ export class FlowGraphExpBlock extends FlowGraphUnaryOperationBlock<any, any> {
 }
 RegisterClass(FlowGraphExpBlock.ClassName, FlowGraphExpBlock);
 
+/**
+ * @experimental
+ * Log block
+ */
 export class FlowGraphLogBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeNumber, (a) => this._polymorphicLog(a), FlowGraphLogBlock.ClassName, config);
@@ -792,6 +972,10 @@ export class FlowGraphLogBlock extends FlowGraphUnaryOperationBlock<any, any> {
 }
 RegisterClass(FlowGraphLogBlock.ClassName, FlowGraphLogBlock);
 
+/**
+ * @experimental
+ * Log2 block
+ */
 export class FlowGraphLog2Block extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeNumber, (a) => this._polymorphicLog2(a), FlowGraphLog2Block.ClassName, config);
@@ -805,6 +989,10 @@ export class FlowGraphLog2Block extends FlowGraphUnaryOperationBlock<any, any> {
 }
 RegisterClass(FlowGraphLog2Block.ClassName, FlowGraphLog2Block);
 
+/**
+ * @experimental
+ * Log10 block
+ */
 export class FlowGraphLog10Block extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeNumber, (a) => this._polymorphicLog10(a), FlowGraphLog10Block.ClassName, config);
@@ -818,6 +1006,10 @@ export class FlowGraphLog10Block extends FlowGraphUnaryOperationBlock<any, any> 
 }
 RegisterClass(FlowGraphLog10Block.ClassName, FlowGraphLog10Block);
 
+/**
+ * @experimental
+ * Sqrt block
+ */
 export class FlowGraphSqrtBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeNumber, (a) => this._polymorphicSqrt(a), FlowGraphSqrtBlock.ClassName, config);
@@ -831,6 +1023,10 @@ export class FlowGraphSqrtBlock extends FlowGraphUnaryOperationBlock<any, any> {
 }
 RegisterClass(FlowGraphSqrtBlock.ClassName, FlowGraphSqrtBlock);
 
+/**
+ * @experimental
+ * Cube root block
+ */
 export class FlowGraphCubeRootBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeNumber, (a) => this._polymorphicCubeRoot(a), FlowGraphCubeRootBlock.ClassName, config);
@@ -844,6 +1040,10 @@ export class FlowGraphCubeRootBlock extends FlowGraphUnaryOperationBlock<any, an
 }
 RegisterClass(FlowGraphCubeRootBlock.ClassName, FlowGraphCubeRootBlock);
 
+/**
+ * @experimental
+ * Pow block
+ */
 export class FlowGraphPowBlock extends FlowGraphBinaryOperationBlock<any, any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeNumber, RichTypeNumber, (a, b) => this._polymorphicPow(a, b), FlowGraphPowBlock.ClassName, config);
@@ -857,6 +1057,10 @@ export class FlowGraphPowBlock extends FlowGraphBinaryOperationBlock<any, any, a
 }
 RegisterClass(FlowGraphPowBlock.ClassName, FlowGraphPowBlock);
 
+/**
+ * @experimental
+ * Vector length block
+ */
 export class FlowGraphLengthBlock extends FlowGraphUnaryOperationBlock<any, number> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeNumber, (a) => this._polymorphicLength(a), FlowGraphLengthBlock.ClassName, config);
@@ -878,6 +1082,10 @@ export class FlowGraphLengthBlock extends FlowGraphUnaryOperationBlock<any, numb
 }
 RegisterClass(FlowGraphLengthBlock.ClassName, FlowGraphLengthBlock);
 
+/**
+ * @experimental
+ * Normalize block
+ */
 export class FlowGraphNormalizeBlock extends FlowGraphUnaryOperationBlock<any, any> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeAny, RichTypeAny, (a) => this._polymorphicNormalize(a), FlowGraphNormalizeBlock.ClassName, config);
@@ -899,6 +1107,10 @@ export class FlowGraphNormalizeBlock extends FlowGraphUnaryOperationBlock<any, a
 }
 RegisterClass(FlowGraphNormalizeBlock.ClassName, FlowGraphNormalizeBlock);
 
+/**
+ * @experimental
+ * Cross product block
+ */
 export class FlowGraphCrossBlock extends FlowGraphBinaryOperationBlock<Vector3, Vector3, Vector3> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeVector3, RichTypeVector3, RichTypeVector3, (a, b) => Vector3.Cross(a, b), FlowGraphCrossBlock.ClassName, config);
@@ -908,6 +1120,10 @@ export class FlowGraphCrossBlock extends FlowGraphBinaryOperationBlock<Vector3, 
 }
 RegisterClass(FlowGraphCrossBlock.ClassName, FlowGraphCrossBlock);
 
+/**
+ * @experimental
+ * Rotate 2D block
+ */
 export class FlowGraphRotate2DBlock extends FlowGraphBinaryOperationBlock<Vector2, number, Vector2> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(RichTypeVector2, RichTypeNumber, RichTypeVector2, (a, b) => Vector2.Transform(a, Matrix.RotationZ(b)), FlowGraphRotate2DBlock.ClassName, config);
@@ -917,6 +1133,10 @@ export class FlowGraphRotate2DBlock extends FlowGraphBinaryOperationBlock<Vector
 }
 RegisterClass(FlowGraphRotate2DBlock.ClassName, FlowGraphRotate2DBlock);
 
+/**
+ * @experimental
+ * Rotate 3D block
+ */
 export class FlowGraphRotate3DBlock extends FlowGraphTernaryOperationBlock<Vector3, Vector3, number, Vector3> {
     constructor(config?: IFlowGraphBlockConfiguration) {
         super(
